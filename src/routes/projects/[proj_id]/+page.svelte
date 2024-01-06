@@ -8,6 +8,7 @@
 		type ModalSettings
 	} from '@skeletonlabs/skeleton';
 	import { onMount } from 'svelte';
+	import { goto } from '$app/navigation';
 
 	const toastStore = getToastStore();
 
@@ -121,6 +122,36 @@
 		});
 	}
 
+	async function deleteProject() {
+		const modal: ModalSettings = {
+			type: 'confirm',
+			title: 'Confirm Deletion',
+			body: `Are you sure you want to delete ${proj_name}?`,
+			response: (confirm: boolean) => {
+				if (confirm) {
+					performDeletion();
+				}
+			}
+		};
+		modalStore.trigger(modal);
+	}
+
+	async function performDeletion() {
+		const { error } = await data.supabase.from('projects').delete().eq('id', id);
+		if (!error) {
+			toastStore.trigger({
+				message: `${proj_name} deleted successfully`
+			});
+			// Redirect to projects page or a safe page
+			goto('/projects');
+		} else {
+			console.error('Error deleting project:', error);
+			toastStore.trigger({
+				message: `Error deleting project: ${error.message}`
+			});
+		}
+	}
+
 	onMount(() => {
 		// Convert window.location to a string
 		const currentUrl = window.location.toString();
@@ -132,7 +163,7 @@
 
 <div class="w-full justify-center">
 	<ol class="breadcrumb p-6">
-		<li class="crumb"><a class="anchor" href="/projects">Projects</a></li>
+		<li class="crumb"><a class="anchor" href="/projects">Dashboard</a></li>
 		<li class="crumb-separator" aria-hidden>&rsaquo;</li>
 		<li class="crumb"><a class="anchor capitalize" href={currenURL.toString()}>{proj_name}</a></li>
 		<!-- <li>Hours</li> -->
@@ -185,5 +216,10 @@
 				</tr>
 			</tfoot>
 		</table>
+		<div class="flex w-full justify-center mt-10">
+			<button class="btn variant-filled-primary w-auto" on:click={deleteProject}
+				>Delete this project</button
+			>
+		</div>
 	</div>
 </div>

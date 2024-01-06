@@ -1,6 +1,8 @@
 <script lang="ts">
 	import type { PageData } from './$types';
 	import {
+		Tab,
+		TabGroup,
 		ListBox,
 		ListBoxItem,
 		getToastStore,
@@ -23,6 +25,7 @@
 	}
 
 	let selectItemId: number = 0;
+	let tabSet: number = 0;
 
 	// Reactive statement to detect changes in selectItemId
 	$: if (selectItemId) {
@@ -44,38 +47,65 @@
 	if (data.userDetails) {
 		userDetails = data.userDetails[0];
 	}
-
-	userDetails = [];
 </script>
 
-<div class="card p-4 bg-success-700" data-popup="popupHover">
+<div class="card p-4 variant-filled-secondary" data-popup="popupHover">
 	<p>Add New Project</p>
-	<div class="arrow bg-success-700" />
+	<div class="arrow variant-filled-secondary" />
 </div>
 
 <div class="flex-col justify-center items-center w-full h-screen">
-	{#if userDetails.first_name}
-		<h4 class="h4 font-bold ml-10 mt-10">Hi, {userDetails.first_name}!</h4>
-	{:else}
-		<h4 class="h4 font-bold ml-10 mt-10">Hi!</h4>
-	{/if}
+	<div class="w-full text-center mt-6">
+		{#if userDetails.first_name}
+			<h4 class="h4 font-bold">Hi, {userDetails.first_name}!</h4>
+		{:else}
+			<div class="flex flex-col justify-center w-40 items-center">
+				<h4 class="h4 font-bold">Hi, user!</h4>
+				<a href="/account" class="btn btn-sm variant-filled-primary">+ Account Info</a>
+			</div>
+		{/if}
+	</div>
+
 	<div class="card flex-col w-5/6 md:w-3/5 mx-auto mt-5 p-4 space-y-4">
-		<div class="flex card-header justify-between items-center">
-			<h2 class="h1 text-center w-full">Your Projects</h2>
-			<a href="/addproject" class="badge bg-success-700 h-6" use:popup={popupHover}>+</a>
+		<div class="flex card-header justify-center items-center">
+			<h2 class="h2 font-bold mr-8">Dashboard</h2>
 		</div>
-		<ListBox>
-			{#each projects as project}
-				<ListBoxItem
-					hover="hover:variant-filled-primary"
-					bind:group={selectItemId}
-					name="project"
-					value={project.id}
-					><span class="flex justify-center capitalize text-2xl md:text-4xl w-full p-2"
-						>{project.proj_name}</span
-					></ListBoxItem
-				>
-			{/each}
-		</ListBox>
+		<TabGroup
+			border="border-b border-surface-400-500-token"
+			active="font-bold border-b-2 border-surface-900-50-token"
+		>
+			<Tab bind:group={tabSet} name="tab1" value={0}>Your Projects</Tab>
+			<Tab bind:group={tabSet} name="tab2" value={1}>Recent Activity</Tab>
+			<Tab bind:group={tabSet} name="tab3" value={2}>YTD</Tab>
+			{#if tabSet == 0}
+				<div class="w-full flex justify-end items-center">
+					<a href="/addproject" class="badge variant-filled-secondary h-6" use:popup={popupHover}
+						>+</a
+					>
+				</div>
+			{/if}
+			<!-- Tab Panels --->
+			<svelte:fragment slot="panel">
+				{#if tabSet === 0}
+					<ListBox>
+						{#each projects as project}
+							<ListBoxItem
+								hover="hover:variant-filled-primary"
+								bind:group={selectItemId}
+								name="project"
+								value={project.id}
+								><span class="flex justify-center capitalize text-1xl md:text-3xl p-2 m-auto"
+									>{project.proj_name}</span
+								></ListBoxItem
+							>
+						{/each}
+					</ListBox>
+				{:else if tabSet === 1}
+					Recent Activity
+				{:else if tabSet === 2}
+					Yearly Totals
+				{/if}
+			</svelte:fragment>
+		</TabGroup>
 	</div>
 </div>

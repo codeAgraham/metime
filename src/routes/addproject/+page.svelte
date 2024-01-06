@@ -7,7 +7,7 @@
 		<form method="POST" class="w-4/6 m-auto pb-10 space-y-4">
 			<label class="label">
 				<span>Project Name</span>
-				<input class="input dark:text-white" type="text" name="proj_name" />
+				<input class="input text-black dark:text-white" type="text" name="proj_name" />
 			</label>
 			<button class="btn variant-filled-primary w-full">Submit</button>
 		</form>

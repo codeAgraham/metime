@@ -26,13 +26,34 @@ export const actions = {
 		const lastName = data.get('lname') as string;
 		const user = await locals.getSession();
 
-		const { error: err } = await locals.supabase
+		// Check if user info already exists
+		const { data: existingUserInfo, error: fetchError } = await locals.supabase
 			.from('user_info')
-			.insert({ first_name: firstName, last_name: lastName, uuid: user?.user.id })
-			.eq('uuid', user?.user.id);
+			.select('*')
+			.eq('uuid', user?.user.id)
+			.single();
 
-		if (err) {
-			throw error(500, 'Could not update your username');
+		if (fetchError && fetchError.message !== 'No rows found') {
+			throw error(500, 'Error fetching user information');
+		}
+
+		let query;
+		if (existingUserInfo) {
+			// Update existing user info
+			query = locals.supabase
+				.from('user_info')
+				.update({ first_name: firstName, last_name: lastName })
+				.eq('uuid', user?.user.id);
+		} else {
+			// Insert new user info
+			query = locals.supabase
+				.from('user_info')
+				.insert({ first_name: firstName, last_name: lastName, uuid: user?.user.id });
+		}
+
+		const { error: updateError } = await query;
+		if (updateError) {
+			throw error(500, 'Could not update your user information');
 		}
 
 		return { success: true };

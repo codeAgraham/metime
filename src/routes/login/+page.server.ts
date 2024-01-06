@@ -7,6 +7,7 @@ export const load: PageServerLoad = async ({ locals }) => {
 	if (user) {
 		throw redirect(303, '/projects');
 	}
+
 	return {};
 };
 /** @type {import('./$types').Actions} */

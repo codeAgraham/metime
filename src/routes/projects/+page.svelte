@@ -12,6 +12,7 @@
 	import { goto } from '$app/navigation';
 	import { page } from '$app/stores';
 	import type { PopupSettings } from '@skeletonlabs/skeleton';
+	import { formatDate } from '$lib/utils/helpers';
 
 	export let data: PageData;
 
@@ -47,6 +48,11 @@
 	if (data.userDetails) {
 		userDetails = data.userDetails[0];
 	}
+
+	let recentActivity: any;
+	if (data.recentActivity) {
+		recentActivity = data.recentActivity;
+	}
 </script>
 
 <div class="card p-4 variant-filled-secondary" data-popup="popupHover">
@@ -55,24 +61,23 @@
 </div>
 
 <div class="flex-col justify-center items-center w-full h-screen">
-	<div class="w-full text-center mt-6">
-		{#if userDetails.first_name}
-			<h4 class="h4 font-bold">Hi, {userDetails.first_name}!</h4>
-		{:else}
-			<div class="flex flex-col justify-center w-40 items-center">
-				<h4 class="h4 font-bold">Hi, user!</h4>
-				<a href="/account" class="btn btn-sm variant-filled-primary">+ Account Info</a>
+	<div
+		class="card flex-col w-11/12 md:w-4/5 mx-auto mt-8 min-h-[calc(100vh_-_20%)] p-4 space-y-4 overflow-auto"
+	>
+		<div class="grid grid-cols-3 grid-rows-1 gap-4 h-14">
+			<div class="pl-4">
+				{#if userDetails.first_name}
+					<h4 class="h4 font-bold">Hi, {userDetails.first_name}!</h4>
+				{:else}
+					<h4 class="h4 font-bold">Hi, <a href="/account" class="anchor">user!</a></h4>
+				{/if}
 			</div>
-		{/if}
-	</div>
-
-	<div class="card flex-col w-5/6 md:w-3/5 mx-auto mt-5 p-4 space-y-4">
-		<div class="flex card-header justify-center items-center">
-			<h2 class="h2 font-bold mr-8">Dashboard</h2>
+			<h2 class="h2 font-bold text-center">Dashboard</h2>
 		</div>
 		<TabGroup
 			border="border-b border-surface-400-500-token"
-			active="font-bold border-b-2 border-surface-900-50-token"
+			active="font-bold border-surface-900-50-token variant-filled-primary"
+			regionList="w-11/12 mx-auto"
 		>
 			<Tab bind:group={tabSet} name="tab1" value={0}>Your Projects</Tab>
 			<Tab bind:group={tabSet} name="tab2" value={1}>Recent Activity</Tab>
@@ -94,14 +99,38 @@
 								bind:group={selectItemId}
 								name="project"
 								value={project.id}
-								><span class="flex justify-center capitalize text-1xl md:text-3xl p-2 m-auto"
+								><span class="flex justify-center capitalize text-1xl md:text-3xl p-2"
 									>{project.proj_name}</span
 								></ListBoxItem
 							>
 						{/each}
 					</ListBox>
 				{:else if tabSet === 1}
-					Recent Activity
+					<div class="table-container w-11/12 mx-auto pt-10">
+						<!-- Native Table Element -->
+						<table class="table table-hover">
+							<thead>
+								<tr>
+									<th>Date</th>
+									<th>Hours Entered</th>
+									<th>Project Name</th>
+								</tr>
+							</thead>
+							<tbody>
+								{#each recentActivity as entry}
+									<tr>
+										<td>{formatDate(entry.created_at)}</td>
+										<td class="!pl-10 md:!pl-20">{entry.hours_entered}</td>
+										<td>
+											<a href={`/projects/${entry.projects.id}`} class="capitalize anchor pl-2"
+												>{entry.projects.proj_name}</a
+											>
+										</td>
+									</tr>
+								{/each}
+							</tbody>
+						</table>
+					</div>
 				{:else if tabSet === 2}
 					Yearly Totals
 				{/if}

@@ -9,6 +9,7 @@
 	} from '@skeletonlabs/skeleton';
 	import { onMount } from 'svelte';
 	import { goto } from '$app/navigation';
+	import { formatDate } from '$lib/utils/helpers';
 
 	const toastStore = getToastStore();
 
@@ -64,69 +65,66 @@
 	let today = new Date();
 	let currentMonthName = monthNames[today.getMonth()];
 
-	function formatDate(dateStr: string) {
-		// Extract the year, month, and day from the date string
-		const [year, month, day] = dateStr.split('-').map((part) => parseInt(part));
-
-		// Create a new date object using the year, month (adjusted for zero-index), and day
-		let date = new Date(year, month - 1, day);
-
-		let monthNames = [
-			'Jan',
-			'Feb',
-			'Mar',
-			'Apr',
-			'May',
-			'Jun',
-			'Jul',
-			'Aug',
-			'Sep',
-			'Oct',
-			'Nov',
-			'Dec'
-		];
-		let monthIndex = date.getMonth();
-		let dayOfMonth = date.getDate();
-
-		return `${monthNames[monthIndex]} ${dayOfMonth}, ${year}`;
-	}
-
 	$: totalHours = hours.reduce((total: any, currentEntry: { hours_entered: any }) => {
 		return total + currentEntry.hours_entered;
 	}, 0);
 
-	function deletHour(hourId: number) {
-		new Promise<boolean>((resolve) => {
-			const modal: ModalSettings = {
-				type: 'confirm',
-				title: 'Please Confirm',
-				body: 'Are you sure you wish to delete this hour?',
-				response: (r: boolean) => {
-					resolve(r);
-				}
-			};
-			modalStore.trigger(modal);
-		}).then(async (confirmDelete) => {
-			if (confirmDelete) {
-				const { error } = await data.supabase.from('hours').delete().eq('id', hourId);
-				if (!error) {
-					const index = hours.findIndex((hour) => hour.id === hourId);
-					if (index !== -1) {
-						hours.splice(index, 1);
-						hours = hours.slice(); // this reassignment should trigger reactivity
+	async function deleteHour(hourId: number) {
+		const modal: ModalSettings = {
+			type: 'confirm',
+			title: 'Please Confirm',
+			body: 'Are you sure you wish to delete this hour?',
+			response: async (confirmDelete: boolean) => {
+				if (confirmDelete) {
+					try {
+						const response = await fetch(`/deletehour`, {
+							method: 'DELETE',
+							headers: {
+								'Content-Type': 'application/json'
+							},
+							body: JSON.stringify({ hourId })
+						});
+
+						if (!response.ok) {
+							throw new Error('Failed to delete hour');
+						}
+
+						const index = hours.findIndex((hour) => hour.id === hourId);
+						if (index !== -1) {
+							hours.splice(index, 1);
+							hours = hours.slice(); // Trigger reactivity
+						}
+
+						toastStore.trigger({ message: 'Hour deleted successfully' });
+					} catch (error) {
+						console.error('Error deleting hour:', error);
+
+						// Check if error is an instance of Error
+						if (error instanceof Error) {
+							toastStore.trigger({
+								message: `Error deleting hour: ${error.message}`,
+								background: 'variant-filled-error'
+							});
+						} else {
+							// If it's not an Error instance, handle it as a generic error
+							toastStore.trigger({
+								message: 'Error deleting hour: An unknown error occurred',
+								background: 'variant-filled-error'
+							});
+						}
 					}
-				} else {
-					console.error('Error deleting hour:', error);
 				}
 			}
-		});
+		};
+		modalStore.trigger(modal);
 	}
 
 	async function deleteProject() {
 		const modal: ModalSettings = {
 			type: 'confirm',
 			title: 'Confirm Deletion',
-			body: `Are you sure you want to delete ${proj_name}?`,
+			body: `Are you sure you want to delete ${proj_name}? This cannot be undone!`,
+			buttonTextConfirm: 'Yes, delete this project forever',
 			response: (confirm: boolean) => {
 				if (confirm) {
 					performDeletion();
@@ -195,7 +193,7 @@
 						<td>
 							<button
 								class="btn btn-sm variant-filled-error opacity-0 group-hover:opacity-100 transition-opacity duration-300 ease-in-out"
-								on:click={() => deletHour(entry.id)}
+								on:click={() => deleteHour(entry.id)}
 							>
 								-
 							</button>
@@ -218,7 +216,7 @@
 		</table>
 		<div class="flex w-full justify-center mt-10">
 			<button class="btn variant-filled-primary w-auto" on:click={deleteProject}
-				>Delete this project</button
+				>⚠️ Delete this project</button
 			>
 		</div>
 	</div>

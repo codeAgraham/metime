@@ -44,14 +44,14 @@
 		<!-- App Bar -->
 		<AppBar gridColumns="grid-cols-3" slotDefault="place-self-center" slotTrail="place-content-end">
 			<svelte:fragment slot="lead">
-				<button class="dark:fill-white fill-current pl-4" on:click={handleOpenMenu}>
+				<button class="dark:fill-white fill-current pl-2" on:click={handleOpenMenu}>
 					<svg width="30px" height="30px" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg">
 						<title>Open Menu</title>
 						<desc>Hamburger menu to open navigation</desc>
 						<g fill="currentColor">
 							<path d="m 1 2 h 14 v 1 h -14 z m 0 0" />
-							<path d="m 1 7 h 14 v 1 h -14 z m 0 0" />
-							<path d="m 1 12 h 14 v 1 h -14 z m 0 0" />
+							<path d="m 1 6 h 14 v 1 h -14 z m 0 0" />
+							<path d="m 1 10 h 14 v 1 h -14 z m 0 0" />
 						</g>
 					</svg>
 				</button>

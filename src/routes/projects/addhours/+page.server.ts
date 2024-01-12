@@ -21,15 +21,17 @@ export const load = (async ({ url, locals }) => {
 /** @type {import('./$types').Actions} */
 export const actions = {
 	default: async ({ request, locals }) => {
+		const user = await locals.getSession();
 		const data = await request.formData();
 		const hours = data.get('hours');
 		const date = data.get('date');
 		const proj_id = data.get('proj_id') as string;
 		const proj_name = data.get('proj_name') as string;
+		const userId = user?.user.id;
 
 		const { error } = await locals.supabase
 			.from('hours')
-			.insert({ hours_entered: hours, proj_id: proj_id, date_worked: date });
+			.insert({ hours_entered: hours, proj_id: proj_id, date_worked: date, user_id: userId });
 
 		if (error) {
 			console.log(error.message, error.details);

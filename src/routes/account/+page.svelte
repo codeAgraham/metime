@@ -25,31 +25,37 @@
 </script>
 
 <div class="w-full h-screen flex flex-col items-center mt-10">
-	<div class="card w-5/6 md:w-3/5 p-8">
+	<div class="card md:w-3/5 p-8">
 		<div class="card-header">
 			<h1 class="h2 mb-2">Account Details</h1>
 			<span>{user?.email}</span>
 		</div>
 		<hr class="my-10" />
-		<section class="mt-4">
-			<div class="px-10">
-				<p class="mt-20 mb-4">Name</p>
+		<section class="flex mt-4 w-full justify-center">
+			<div class="w-11/12 md:w-1/2">
+				<p class="mt-20 mb-4">Update Name</p>
 				<form method="POST" class="flex flex-col">
-					<div class="flex">
-						<input
-							class="input mr-6 mb-4"
-							type="text"
-							name="fname"
-							placeholder="First"
-							bind:value={userInfo.first_name}
-						/>
-						<input
-							class="input mb-4"
-							type="text"
-							name="lname"
-							placeholder="Last"
-							bind:value={userInfo.last_name}
-						/>
+					<div class="flex flex-col">
+						<label class="label">
+							<span>First</span>
+							<input
+								class="input !mb-4"
+								type="text"
+								name="fname"
+								placeholder="First"
+								bind:value={userInfo.first_name}
+							/>
+						</label>
+						<label class="label">
+							<span>Last</span>
+							<input
+								class="input"
+								type="text"
+								name="lname"
+								placeholder="Last"
+								bind:value={userInfo.last_name}
+							/>
+						</label>
 					</div>
 					<button class="btn btn-l variant-filled-secondary mx-auto w-40 mt-20">Save</button>
 				</form>

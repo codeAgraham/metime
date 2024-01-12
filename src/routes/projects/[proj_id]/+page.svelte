@@ -164,9 +164,8 @@
 		<li class="crumb"><a class="anchor" href="/projects">Dashboard</a></li>
 		<li class="crumb-separator" aria-hidden>&rsaquo;</li>
 		<li class="crumb"><a class="anchor capitalize" href={currenURL.toString()}>{proj_name}</a></li>
-		<!-- <li>Hours</li> -->
 	</ol>
-	<div class="table-container table-interactive mx-auto w-5/6 md:w-3/5 mt-6">
+	<div class="table-container table-interactive mx-auto w-11/12 md:w-3/5 mt-6">
 		<table class="table table-hover">
 			<thead>
 				<tr>
@@ -214,10 +213,14 @@
 				</tr>
 			</tfoot>
 		</table>
-		<div class="flex w-full justify-center mt-10">
-			<button class="btn variant-filled-primary w-auto" on:click={deleteProject}
-				>⚠️ Delete this project</button
-			>
-		</div>
 	</div>
+</div>
+
+<div class="flex w-full justify-center mt-10 px-4">
+	<button class="btn btn-sm variant-filled-success mr-4"
+		><a href={`/projects/history/?pid=${id}`}>📖 Project History</a></button
+	>
+	<button class="btn btn-sm variant-filled-primary" on:click={deleteProject}
+		>⚠️ Delete project</button
+	>
 </div>

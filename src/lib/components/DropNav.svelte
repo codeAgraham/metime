@@ -27,7 +27,13 @@
 			<li>
 				<a href="/projects" on:click={onCloseMenu}>
 					<span class="badge !text-base">⛭</span>
-					<span class="flex-auto">Projects</span>
+					<span class="flex-auto">Dashboard</span>
+				</a>
+			</li>
+			<li>
+				<a href="/addproject" on:click={onCloseMenu}>
+					<span class="badge !text-base">➕</span>
+					<span class="flex-auto">Add New Project</span>
 				</a>
 			</li>
 			<li>
@@ -44,7 +50,7 @@
 							/>
 						</svg>
 					</span>
-					<span class="flex-auto">Account</span>
+					<span class="flex-auto">User Account</span>
 				</a>
 			</li>
 			<li>

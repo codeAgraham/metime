@@ -1,5 +1,6 @@
 <script lang="ts">
 	import '../app.postcss';
+	import { page } from '$app/stores';
 	import {
 		AppShell,
 		AppBar,
@@ -28,6 +29,11 @@
 	const handleCloseMenu = () => {
 		drawerStore.close();
 	};
+
+	$: regionPageClass =
+		$page.url.pathname === '/'
+			? 'bg-gradient-to-bl from-emerald-300 via-indigo-100 to-violet-300'
+			: 'bg-surface-50-900-token';
 </script>
 
 <svelte:head><title>metime$</title></svelte:head>
@@ -39,10 +45,15 @@
 </Drawer>
 
 <!-- App Shell -->
-<AppShell>
+<AppShell regionPage={regionPageClass}>
 	<svelte:fragment slot="header">
 		<!-- App Bar -->
-		<AppBar gridColumns="grid-cols-3" slotDefault="place-self-center" slotTrail="place-content-end">
+		<AppBar
+			gridColumns="grid-cols-3"
+			slotDefault="place-self-center"
+			slotTrail="place-content-end"
+			background="bg-surface-200-700-token"
+		>
 			<svelte:fragment slot="lead">
 				<button class="dark:fill-white fill-current pl-2" on:click={handleOpenMenu}>
 					<svg width="30px" height="30px" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg">

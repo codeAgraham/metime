@@ -14,19 +14,22 @@
 	}
 </script>
 
-<div class="flex justify-center items-center mt-32">
-	<div class="w-4/5 md:w-2/5 card variant-filled">
-		<h1 class="h1 card-header pb-4 pl-12">Login</h1>
-		<form method="POST" class="w-4/6 m-auto pb-10 space-y-4">
+<div class="flex flex-col items-center mt-14 h-full">
+	<div class="w-11/12 md:w-2/5 card min-h-fit">
+		<h1 class="h3 font-bold pl-8 md:pl-20 pt-6 uppercase !rounded-sm">Login</h1>
+		<form method="POST" class="w-5/6 m-auto py-6 md:px-10 space-y-4">
 			<label class="label">
 				<span>email</span>
-				<input class="input dark:text-white" type="email" name="email" />
+				<input class="input text-black dark:text-white" type="email" name="email" />
 			</label>
 			<label class="label">
 				<span>password</span>
 				<input class="input text-black dark:text-white" type="password" name="password" />
 			</label>
-			<button class="btn variant-filled-primary w-full">Submit</button>
+			<button class="btn variant-filled-primary w-full !mt-8">Submit</button>
 		</form>
+		<div class="my-4 w-full flex justify-center">
+			<p>or sign up <a href="/signup" class="anchor">here</a></p>
+		</div>
 	</div>
 </div>

@@ -36,20 +36,20 @@ export const load: PageServerLoad = async ({ locals }) => {
 		error(500, { message: 'Failed to fetch user details' });
 	}
 
-	// Fetch the 10 most recent entries from 'hours' table and join with 'projects'
+	// Fetch the 10 most recent entries from 'hours' table for the current session user and join with 'projects'
 	const { data: recentActivity, error: recentActivityError } = await locals.supabase
 		.from('hours')
 		.select(
 			`
-            created_at,
-            hours_entered,
-            projects (
-                proj_name,
-				id
-            )
-        `
+		created_at,
+		hours_entered,
+		projects (
+			proj_name,
+			id
 		)
-		.eq('projects.user_id', session?.user.id) // Assuming projects.user_id should match the session user
+	`
+		)
+		.eq('user_id', session?.user.id) // Filtering by the user_id in the hours table
 		.order('created_at', { ascending: false })
 		.limit(10);
 
@@ -65,14 +65,11 @@ export const load: PageServerLoad = async ({ locals }) => {
 		.from('hours')
 		.select(
 			`
-        date_worked,
-        hours_entered,
-        projects (
-            user_id
-        )
-    `
+            date_worked,
+            hours_entered
+        `
 		)
-		.eq('projects.user_id', session?.user.id)
+		.eq('user_id', session?.user.id) // Filter by the user_id in the hours table
 		.gte('date_worked', `${currentYear}-01-01`)
 		.lte('date_worked', `${currentYear}-12-31`)
 		.order('date_worked', { ascending: true });
@@ -81,14 +78,13 @@ export const load: PageServerLoad = async ({ locals }) => {
 		console.error('Query Error:', monthlyTotalsError);
 		error(500, { message: 'Failed to fetch monthly totals' });
 	}
+
 	// Aggregate data by month
 	const aggregatedData = monthlyTotals?.reduce((acc: MonthlyTotals, entry) => {
 		const month = format(new Date(entry.date_worked), 'MM');
 		acc[month] = (acc[month] || 0) + entry.hours_entered;
 		return acc;
 	}, {} as MonthlyTotals);
-
-	console.log(aggregatedData);
 
 	// Return all data
 	return {

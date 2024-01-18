@@ -89,6 +89,22 @@
 	}
 
 	$: {
+		const isPasswordValid = passwordSchema.safeParse(password).success;
+		const doPasswordsMatch = password === passwordConfirm;
+
+		passwordValidationState = isPasswordValid ? 'input-success' : '';
+		passwordConfirmValidationState = isPasswordValid && !doPasswordsMatch ? 'input-error' : '';
+
+		if (isPasswordValid && doPasswordsMatch) {
+			passwordValidationState = 'input-success';
+			passwordConfirmValidationState = 'input-success';
+			passwordLockedState = false;
+		} else {
+			passwordLockedState = true; // Relock if the condition is not met
+		}
+	}
+
+	$: {
 		const isFnameValid = nameSchema.safeParse(fname).success;
 		const isLnameValid = nameSchema.safeParse(lname).success;
 
@@ -172,7 +188,7 @@
 			</Step>
 			<Step locked={nameLockedState}>
 				<svelte:fragment slot="header">
-					<p class="my-10">Choose a password</p>
+					<p class="my-10">Enter your name</p>
 				</svelte:fragment>
 				<input
 					type="text"

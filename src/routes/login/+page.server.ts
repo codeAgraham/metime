@@ -20,7 +20,6 @@ export const actions = {
 		const { error: err } = await locals.supabase.auth.signInWithPassword({ email, password });
 
 		if (err) {
-			console.log(err.message);
 			throw error(401, `Your login attempt failed. ${err.message}`);
 		}
 

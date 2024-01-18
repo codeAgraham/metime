@@ -40,7 +40,7 @@
 </Drawer>
 
 <!-- App Shell -->
-<AppShell>
+<AppShell regionPage="custom-gradient">
 	<svelte:fragment slot="header">
 		<!-- App Bar -->
 		<AppBar

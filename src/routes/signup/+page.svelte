@@ -85,7 +85,7 @@
 </script>
 
 <div class="flex flex-col items-center mt-14 h-full">
-	<div class="w-11/12 md:w-2/5 card p-6 md:p-14 min-h-fit">
+	<div class="w-11/12 md:w-2/5 card variant-filled p-6 md:p-14 min-h-fit">
 		<Stepper on:complete={onCompleteHandler}>
 			<Step locked={emailLockedState}>
 				<svelte:fragment slot="header">

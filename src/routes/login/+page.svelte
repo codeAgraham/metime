@@ -23,7 +23,7 @@
 </script>
 
 <div class="flex flex-col items-center mt-14 h-full">
-	<div class="w-11/12 md:w-2/5 card min-h-fit">
+	<div class="w-11/12 md:w-2/5 card variant-filled min-h-fit">
 		<h1 class="h3 font-bold pl-8 md:pl-20 pt-6 uppercase !rounded-sm">Login</h1>
 		<form method="POST" class="w-5/6 m-auto py-6 md:px-10 space-y-4">
 			<label class="label">

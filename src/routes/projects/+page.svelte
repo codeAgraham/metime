@@ -96,7 +96,7 @@
 					{#if projects && projects.length > 0}
 						<ListBox spacing="space-y-2">
 							{#each projects as project}
-								<div class="card">
+								<div class="card variant-filled-secondary">
 									<ListBoxItem
 										hover="hover:variant-filled-primary"
 										bind:group={selectItemId}

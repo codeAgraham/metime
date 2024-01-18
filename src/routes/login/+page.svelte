@@ -28,11 +28,21 @@
 		<form method="POST" class="w-5/6 m-auto py-6 md:px-10 space-y-4">
 			<label class="label">
 				<span>email</span>
-				<input class="input text-black dark:text-white" type="email" name="email" />
+				<input
+					class="input text-black dark:text-white"
+					type="email"
+					name="email"
+					autocomplete="username"
+				/>
 			</label>
 			<label class="label">
 				<span>password</span>
-				<input class="input text-black dark:text-white" type="password" name="password" />
+				<input
+					class="input text-black dark:text-white"
+					type="password"
+					name="password"
+					autocomplete="current-password"
+				/>
 			</label>
 			<button class="btn variant-filled-primary w-full !mt-8">Submit</button>
 		</form>

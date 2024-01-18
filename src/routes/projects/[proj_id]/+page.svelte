@@ -212,12 +212,16 @@
 	</div>
 </div>
 
-<div class="flex w-full justify-center mt-10 px-4 space-x-4">
-	<a href={`/projects/addhours?projectId=${id}`} class="btn variant-filled-tertiary">+ Add hours</a>
-	<a href={`/projects/history/?pid=${id}`} class="btn btn-sm variant-filled-success"
+<div
+	class="flex flex-col md:flex-row md:space-x-2 justify-center items-center mt-10 px-4 space-y-2"
+>
+	<a href={`/projects/addhours?projectId=${id}`} class="btn btn-md variant-filled-tertiary w-60"
+		>+ Add hours</a
+	>
+	<a href={`/projects/history/?pid=${id}`} class="btn btn-md variant-filled-success w-60"
 		>📖 Project History</a
 	>
-	<button class="btn btn-sm variant-filled-primary" on:click={deleteProject}
+	<button class="btn btn-md variant-filled-primary w-60" on:click={deleteProject}
 		>⚠️ Delete project</button
 	>
 </div>

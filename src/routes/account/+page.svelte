@@ -30,22 +30,22 @@
 			<span>{user?.email}</span>
 		</div>
 		<hr class="my-10" />
-		<section class="flex mt-4 w-full justify-center">
+		<section class="flex w-full justify-center">
 			<div class="w-11/12 md:w-1/2">
-				<p class="mt-20 mb-4">Update Name</p>
+				<p class="mt-4">Update Name</p>
 				<form method="POST" class="flex flex-col">
 					<div class="flex flex-col">
-						<label class="label">
+						<label class="label !mt-8">
 							<span>First</span>
 							<input
-								class="input !mb-4"
+								class="input"
 								type="text"
 								name="fname"
 								placeholder="First"
 								bind:value={userInfo.first_name}
 							/>
 						</label>
-						<label class="label">
+						<label class="label !mt-8">
 							<span>Last</span>
 							<input
 								class="input"

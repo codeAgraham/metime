@@ -16,6 +16,14 @@
 	let emailValidationState = '';
 	let passwordValidationState = '';
 	let passwordConfirmValidationState = '';
+	let passwordCriteria = {
+		minLength: { valid: false, message: 'At least 8 characters' },
+		upperCase: { valid: false, message: 'At least one uppercase letter' },
+		lowerCase: { valid: false, message: 'At least one lowercase letter' },
+		number: { valid: false, message: 'At least one number' },
+		specialChar: { valid: false, message: 'At least one special character' }
+	};
+
 	let nameValidationState = '';
 	let emailLockedState = true;
 	let passwordLockedState = true;
@@ -23,7 +31,22 @@
 
 	// Zod schemas
 	const emailSchema = z.string().email();
-	const passwordSchema = z.string().min(8);
+	const passwordSchema = z
+		.string()
+		.min(8)
+		.refine((password) => /[A-Z]/.test(password), {
+			message: 'Password must contain at least one uppercase letter'
+		})
+		.refine((password) => /[a-z]/.test(password), {
+			message: 'Password must contain at least one lowercase letter'
+		})
+		.refine((password) => /[0-9]/.test(password), {
+			message: 'Password must contain at least one number'
+		})
+		.refine((password) => /[!@#$%^&*(),.?":{}|<>]/.test(password), {
+			message: 'Password must contain at least one special character'
+		});
+
 	const nameSchema = z.string().min(1);
 
 	// Reactive validation for email
@@ -50,6 +73,19 @@
 			passwordConfirmValidationState = 'input-success';
 			passwordLockedState = false;
 		}
+	}
+
+	$: {
+		passwordCriteria.minLength.valid = password.length >= 8;
+		passwordCriteria.upperCase.valid = /[A-Z]/.test(password);
+		passwordCriteria.lowerCase.valid = /[a-z]/.test(password);
+		passwordCriteria.number.valid = /[0-9]/.test(password);
+		passwordCriteria.specialChar.valid = /[!@#$%^&*(),.?":{}|<>]/.test(password);
+
+		// Update overall password validation state based on all criteria
+		passwordValidationState = Object.values(passwordCriteria).every((c) => c.valid)
+			? 'input-success'
+			: '';
 	}
 
 	$: {
@@ -85,7 +121,7 @@
 </script>
 
 <div class="flex flex-col items-center mt-14 h-full">
-	<div class="w-11/12 md:w-2/5 card variant-filled p-6 md:p-14 min-h-fit">
+	<div class="w-11/12 md:w-2/5 card p-6 md:p-14 min-h-fit">
 		<Stepper on:complete={onCompleteHandler}>
 			<Step locked={emailLockedState}>
 				<svelte:fragment slot="header">
@@ -117,10 +153,22 @@
 					type="password"
 					name="password_confirm"
 					id="password_confirm"
-					class="input !mb-12 {passwordConfirmValidationState}"
+					class="input !mb-4 {passwordConfirmValidationState}"
 					placeholder="confirm password"
 					bind:value={passwordConfirm}
 				/>
+				<div class="w-full flex justify-center">
+					<ul class="text-xs">
+						{#each Object.values(passwordCriteria) as criterion}
+							<li class={criterion.valid ? 'text-success-500' : 'text-primary-500 ml-2'}>
+								{#if criterion.valid}
+									<span>✅</span>
+								{/if}
+								{criterion.message}
+							</li>
+						{/each}
+					</ul>
+				</div>
 			</Step>
 			<Step locked={nameLockedState}>
 				<svelte:fragment slot="header">

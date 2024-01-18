@@ -29,11 +29,6 @@
 	const handleCloseMenu = () => {
 		drawerStore.close();
 	};
-
-	$: regionPageClass =
-		$page.url.pathname === '/'
-			? 'bg-gradient-to-bl from-emerald-300 via-indigo-100 to-violet-300'
-			: 'bg-surface-50-900-token';
 </script>
 
 <svelte:head><title>metime$</title></svelte:head>
@@ -45,7 +40,7 @@
 </Drawer>
 
 <!-- App Shell -->
-<AppShell regionPage={regionPageClass}>
+<AppShell>
 	<svelte:fragment slot="header">
 		<!-- App Bar -->
 		<AppBar

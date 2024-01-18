@@ -75,7 +75,7 @@
 		});
 
 		if (response.ok) {
-			goto('/projects');
+			goto('/login?newsignup=true');
 		}
 	}
 

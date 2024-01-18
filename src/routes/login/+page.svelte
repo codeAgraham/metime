@@ -12,6 +12,14 @@
 		};
 		toastStore.trigger(t);
 	}
+
+	$: if ($page.url.searchParams.get('newsignup') === 'true') {
+		const t: ToastSettings = {
+			message: 'Please check your email to verify your account before signing in!',
+			background: 'variant-filled-success'
+		};
+		toastStore.trigger(t);
+	}
 </script>
 
 <div class="flex flex-col items-center mt-14 h-full">

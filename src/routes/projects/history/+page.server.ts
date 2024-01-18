@@ -1,6 +1,6 @@
 import type { PageServerLoad } from './$types';
 import { error } from '@sveltejs/kit';
-import { format } from 'date-fns';
+import { format, parseISO } from 'date-fns';
 
 export const load: PageServerLoad = async ({ locals, url }) => {
 	const session = await locals.getSession();
@@ -30,12 +30,23 @@ export const load: PageServerLoad = async ({ locals, url }) => {
 	// Process the entries to get unique months
 	const uniqueMonthsSet = new Set();
 	hoursData?.forEach((entry) => {
-		const monthYear = format(new Date(entry.date_worked), 'yyyy-MM');
+		const monthYear = format(parseISO(entry.date_worked), 'yyyy-MM');
 		uniqueMonthsSet.add(monthYear);
 	});
 
 	const uniqueMonths = Array.from(uniqueMonthsSet);
 
+	// Fetch project name
+	const { data: projectName, error: projectNameError } = await locals.supabase
+		.from('projects')
+		.select('proj_name')
+		.eq('id', projectId)
+		.single();
+
+	if (projectNameError) {
+		error(500, { message: 'Failed to project name.' });
+	}
+
 	// Return the unique months
-	return { uniqueMonths };
+	return { uniqueMonths, projectName, projectId };
 };

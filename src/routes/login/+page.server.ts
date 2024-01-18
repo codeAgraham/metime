@@ -20,10 +20,8 @@ export const actions = {
 		const { error: err } = await locals.supabase.auth.signInWithPassword({ email, password });
 
 		if (err) {
-			throw error(
-				401,
-				'Your login attempt failed.  Either your username or password are incorrect.'
-			);
+			console.log(err.message);
+			throw error(401, `Your login attempt failed. ${err.message}`);
 		}
 
 		throw redirect(303, '/projects');

@@ -5,7 +5,6 @@
 	const toastStore = getToastStore();
 
 	export let data: PageData;
-	/** @type {import('./$types').ActionData} */
 	export let form: any;
 
 	const t: ToastSettings = {
@@ -17,10 +16,10 @@
 	}
 
 	const user = data.session?.user;
-	let userInfo: { [x: string]: any };
+	let userInfo = { first_name: '', last_name: '' };
 
-	if (data.userDetails) {
-		userInfo = data.userDetails[0];
+	if (data.userDetails && data.userDetails.length > 0) {
+		userInfo = { ...userInfo, ...data.userDetails[0] };
 	}
 </script>
 
@@ -59,6 +58,9 @@
 					</div>
 					<button class="btn btn-l variant-filled-secondary mx-auto w-40 mt-20">Save</button>
 				</form>
+				<div class="w-full flex justify-center">
+					<a href="projects" class="btn btn-l variant-filled-error w-40 mt-4">Cancel</a>
+				</div>
 			</div>
 		</section>
 	</div>

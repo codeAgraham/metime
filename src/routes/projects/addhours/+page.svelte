@@ -1,15 +1,20 @@
 <script lang="ts">
 	import type { PageData } from './$types';
+	import BreadCrumb from '$lib/components/BreadCrumb.svelte';
+	import { page } from '$app/stores';
 
 	export let data: PageData;
 
 	let sliderValue = 0;
 
 	const project = data.project[0];
+
+	console.log(project);
 </script>
 
-<div class="flex justify-center items-start h-screen mt-10">
-	<div class="card px-10 w-10/12 md:w-3/5 lg:2/5">
+<div class="w-full justify-center">
+	<BreadCrumb proj_id={project.id} proj_name={project.proj_name} currentUrl={$page.url} />
+	<div class="card px-10 mx-auto w-11/12 md:w-3/5 mt-6">
 		<div class="card-header my-10">
 			<h1 class="h2 text-center">
 				Add Hours for <span class="capitalize">{project.proj_name}</span>

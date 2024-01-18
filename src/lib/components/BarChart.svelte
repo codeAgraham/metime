@@ -28,7 +28,7 @@
 		labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'June', 'July', 'Aug', 'Sept', 'Oct', 'Nov', 'Dec'],
 		datasets: [
 			{
-				label: 'Total Hours per month (all )',
+				label: 'Total Hours/month (all projects)',
 				data: monthlyData,
 				backgroundColor: [
 					'rgba(212, 22,60,1)',

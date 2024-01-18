@@ -169,8 +169,8 @@
 		<table class="table table-hover">
 			<thead>
 				<tr>
-					<th colspan="2" class="h3 lg:h2 text-center">
-						<span class="text-primary-500">{proj_name}</span>
+					<th colspan="2" class="h2">
+						<span class="text-primary-500">{proj_name} </span>
 						<span
 							>hours for {currentMonthName}
 							{new Date().getFullYear()}</span
@@ -202,11 +202,7 @@
 			</tbody>
 			<tfoot>
 				<tr class="variant-soft-tertiary">
-					<td
-						><a href={`/projects/addhours?projectId=${id}`} class="btn variant-filled-tertiary ml-4"
-							>+ Add hours</a
-						></td
-					>
+					<td></td>
 					<td class="h4 font-bold" colspan="2"
 						>Month Total: <span class="text-primary-500">{totalHours}</span></td
 					>
@@ -216,9 +212,10 @@
 	</div>
 </div>
 
-<div class="flex w-full justify-center mt-10 px-4">
-	<button class="btn btn-sm variant-filled-success mr-4"
-		><a href={`/projects/history/?pid=${id}`}>📖 Project History</a></button
+<div class="flex w-full justify-center mt-10 px-4 space-x-4">
+	<a href={`/projects/addhours?projectId=${id}`} class="btn variant-filled-tertiary">+ Add hours</a>
+	<a href={`/projects/history/?pid=${id}`} class="btn btn-sm variant-filled-success"
+		>📖 Project History</a
 	>
 	<button class="btn btn-sm variant-filled-primary" on:click={deleteProject}
 		>⚠️ Delete project</button

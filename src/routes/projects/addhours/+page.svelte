@@ -6,10 +6,22 @@
 	export let data: PageData;
 
 	let sliderValue = 0;
+	let isSubmitEnabled = false;
 
 	const project = data.project[0];
 
-	console.log(project);
+	// Reactive statement to update the submit button state
+	$: isSubmitEnabled = sliderValue >= 1;
+
+	// Function to reset custom validation message
+	function handleDateChange(event) {
+		event.target.setCustomValidity('');
+	}
+
+	// Function to set custom validation message
+	function handleInvalidDate(event) {
+		event.target.setCustomValidity('A full date is required.');
+	}
 </script>
 
 <div class="w-full justify-center">
@@ -23,11 +35,21 @@
 		<div id="form-container" class="flex flex-col justify-center items-center h-1/2">
 			<form method="post" class="w-full text-center">
 				<input type="range" name="hours" bind:value={sliderValue} max="24" class="w-4/5" />
-				<input type="date" name="date" id="date" class="mt-10" />
+				<input
+					type="date"
+					name="date"
+					id="date"
+					class="mt-10"
+					required
+					on:change={handleDateChange}
+					on:invalid={handleInvalidDate}
+				/>
 				<p class="h1 text-8xl mt-8">{sliderValue}</p>
 				<input type="number" name="proj_id" value={project.id} hidden />
 				<input type="text" name="proj_name" bind:value={project.proj_name} hidden />
-				<button class="btn btn-lg variant-filled-primary my-10 w-3/5">Submit</button>
+				<button class="btn btn-lg variant-filled-primary my-10 w-3/5" disabled={!isSubmitEnabled}
+					>Submit</button
+				>
 			</form>
 		</div>
 	</div>

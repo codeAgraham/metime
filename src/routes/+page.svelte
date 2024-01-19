@@ -1,5 +1,13 @@
 <script lang="ts">
 	import homeImg from '$lib/assets/images/freelance_window.webp';
+	import { goto } from '$app/navigation';
+	import type { PageData } from './$types';
+
+	export let data: PageData;
+
+	if (data.session) {
+		goto('/projects');
+	}
 </script>
 
 <div class="container mx-auto p-4 h-screen main-bg w-full">

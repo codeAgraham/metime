@@ -149,6 +149,7 @@
 					name="email"
 					id="email"
 					class="input !mb-12 {emailValidationState}"
+					autocomplete="email"
 					placeholder="email"
 					bind:value={email}
 				/>
@@ -163,6 +164,7 @@
 					id="password"
 					class="input {passwordValidationState}"
 					placeholder="enter a password"
+					autocomplete="new-password"
 					bind:value={password}
 				/>
 				<input
@@ -171,6 +173,7 @@
 					id="password_confirm"
 					class="input !mb-4 {passwordConfirmValidationState}"
 					placeholder="confirm password"
+					autocomplete="new-password"
 					bind:value={passwordConfirm}
 				/>
 				<div class="w-full flex justify-center">
@@ -196,6 +199,7 @@
 					id="fname"
 					class="input {nameValidationState}"
 					placeholder="First"
+					autocomplete="additional-name"
 					bind:value={fname}
 				/>
 				<input
@@ -204,6 +208,7 @@
 					id="lname"
 					class="input !mb-12 {nameValidationState}"
 					placeholder="Last"
+					autocomplete="additional-name"
 					bind:value={lname}
 				/>
 			</Step>

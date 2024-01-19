@@ -32,14 +32,16 @@
 				Add Hours for <span class="capitalize">{project.proj_name}</span>
 			</h1>
 		</div>
-		<div id="form-container" class="flex flex-col justify-center items-center h-1/2">
-			<form method="post" class="w-full text-center">
-				<input type="range" name="hours" bind:value={sliderValue} max="24" class="w-4/5" />
+		<div id="form-container" class="flex justify-center items-center h-1/2 pb-10">
+			<form
+				method="post"
+				class="w-full text-center flex flex-col justify-center items-center space-y-16"
+			>
+				<input type="range" name="hours" bind:value={sliderValue} max="24" class="w-4/6" />
 				<input
 					type="date"
 					name="date"
 					id="date"
-					class="mt-10"
 					required
 					on:change={handleDateChange}
 					on:invalid={handleInvalidDate}
@@ -47,7 +49,7 @@
 				<p class="h1 text-8xl mt-8">{sliderValue}</p>
 				<input type="number" name="proj_id" value={project.id} hidden />
 				<input type="text" name="proj_name" bind:value={project.proj_name} hidden />
-				<button class="btn btn-lg variant-filled-primary my-10 w-3/5" disabled={!isSubmitEnabled}
+				<button class="btn btn-lg variant-filled-primary w-3/5" disabled={!isSubmitEnabled}
 					>Submit</button
 				>
 			</form>

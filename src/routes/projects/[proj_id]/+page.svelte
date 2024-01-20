@@ -161,8 +161,6 @@
 		url.search = ''; // Clears the query parameters
 		window.history.replaceState({}, '', url.toString());
 	});
-
-	console.log(hours.length);
 </script>
 
 <div class="w-full justify-center">

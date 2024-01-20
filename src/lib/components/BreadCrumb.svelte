@@ -8,7 +8,7 @@
 	let breadcrumbLink = '';
 
 	$: if (currentUrl) {
-		const pathSegments = currentUrl.pathname.split('/');
+		const pathSegments = currentUrl.pathname.split('/').filter((segment) => segment.length > 0);
 		const historyIndex = pathSegments.indexOf('history');
 
 		if (historyIndex !== -1) {
@@ -25,7 +25,7 @@
 				breadcrumbLabel = 'History';
 			}
 		} else {
-			// Default behavior for other URLs
+			// Adjusted logic for non-history URLs
 			const lastSegment = pathSegments[pathSegments.length - 1].toLowerCase();
 			switch (lastSegment) {
 				case 'addhours':

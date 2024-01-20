@@ -50,7 +50,7 @@
 	}
 </script>
 
-<ol class="breadcrumb p-6">
+<ol class="breadcrumb p-4">
 	<li class="crumb"><a class="anchor" href="/projects">Dashboard</a></li>
 	<li class="crumb-separator" aria-hidden>&rsaquo;</li>
 	<li class="crumb"><a class="anchor capitalize" href={`/projects/${proj_id}`}>{proj_name}</a></li>

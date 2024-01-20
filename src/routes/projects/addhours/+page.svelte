@@ -26,18 +26,18 @@
 
 <div class="w-full justify-center">
 	<BreadCrumb proj_id={project.id} proj_name={project.proj_name} currentUrl={$page.url} />
-	<div class="card px-10 mx-auto w-11/12 md:w-3/5 mt-6">
-		<div class="card-header my-10">
+	<div class="card p-8 mx-auto w-11/12 md:w-3/5 mt-6">
+		<div class="card-header">
 			<h1 class="h2 text-center">
 				Add Hours for <span class="capitalize">{project.proj_name}</span>
 			</h1>
 		</div>
-		<div id="form-container" class="flex justify-center items-center h-1/2 pb-10">
+		<div id="form-container" class="flex justify-center items-center h-1/2 py-10">
 			<form
 				method="post"
 				class="w-full text-center flex flex-col justify-center items-center space-y-16"
 			>
-				<input type="range" name="hours" bind:value={sliderValue} max="24" class="w-4/6" />
+				<input type="range" name="hours" bind:value={sliderValue} max="24" class="w-4/6 mt-8" />
 				<input
 					type="date"
 					name="date"

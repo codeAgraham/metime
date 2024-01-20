@@ -20,33 +20,7 @@
 	const { proj_name, id } = data.projectWithHours;
 	const currenURL = $page.url;
 	let hours: any[] = [];
-
-	$: if (data.projectWithHours && data.projectWithHours.hours) {
-		hours = data.projectWithHours.hours;
-		hours.sort((a, b) => new Date(a.date_worked).getTime() - new Date(b.date_worked).getTime());
-	} else {
-		hours = [];
-	}
-
-	function capitalizeWords(str: string) {
-		return str
-			.split(' ')
-			.map((word) => word.charAt(0).toUpperCase() + word.slice(1))
-			.join(' ');
-	}
-
-	$: if ($page.url.searchParams.get('success') === 'true') {
-		const projectName = decodeURIComponent($page.url.searchParams.get('proj_name') || '');
-		const capitalizedName = capitalizeWords(projectName);
-		const message = projectName
-			? `Hours added successfully to ${capitalizedName}!`
-			: 'Hours added successfully!';
-		const t: ToastSettings = {
-			message: message
-		};
-		toastStore.trigger(t);
-	}
-
+	let activeDeleteButton: null = null;
 	let monthNames = [
 		'January',
 		'February',
@@ -64,6 +38,25 @@
 
 	let today = new Date();
 	let currentMonthName = monthNames[today.getMonth()];
+
+	$: if (data.projectWithHours && data.projectWithHours.hours) {
+		hours = data.projectWithHours.hours;
+		hours.sort((a, b) => new Date(a.date_worked).getTime() - new Date(b.date_worked).getTime());
+	} else {
+		hours = [];
+	}
+
+	$: if ($page.url.searchParams.get('success') === 'true') {
+		const projectName = decodeURIComponent($page.url.searchParams.get('proj_name') || '');
+		const capitalizedName = capitalizeWords(projectName);
+		const message = projectName
+			? `Hours added successfully to ${capitalizedName}!`
+			: 'Hours added successfully!';
+		const t: ToastSettings = {
+			message: message
+		};
+		toastStore.trigger(t);
+	}
 
 	$: totalHours = hours.reduce((total: any, currentEntry: { hours_entered: any }) => {
 		return total + currentEntry.hours_entered;
@@ -150,6 +143,17 @@
 		}
 	}
 
+	function toggleDeleteButton(entryId: null) {
+		activeDeleteButton = activeDeleteButton === entryId ? null : entryId;
+	}
+
+	function capitalizeWords(str: string) {
+		return str
+			.split(' ')
+			.map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+			.join(' ');
+	}
+
 	onMount(() => {
 		// Convert window.location to a string
 		const currentUrl = window.location.toString();
@@ -157,20 +161,22 @@
 		url.search = ''; // Clears the query parameters
 		window.history.replaceState({}, '', url.toString());
 	});
+
+	console.log(hours.length);
 </script>
 
 <div class="w-full justify-center">
-	<ol class="breadcrumb p-6">
+	<ol class="breadcrumb p-4">
 		<li class="crumb"><a class="anchor" href="/projects">Dashboard</a></li>
 		<li class="crumb-separator" aria-hidden>&rsaquo;</li>
 		<li class="crumb"><a class="anchor capitalize" href={currenURL.toString()}>{proj_name}</a></li>
 	</ol>
-	<div class="table-container table-interactive mx-auto w-11/12 md:w-3/5 mt-6">
+	<div class="table-container table-interactive mx-auto w-11/12 md:w-3/5">
 		<table class="table table-hover">
 			<thead>
 				<tr>
-					<th colspan="2" class="h2">
-						<span class="text-primary-500">{proj_name} </span>
+					<th colspan="3" class="h3 text-center">
+						<span class="text-primary-500 pl-4">{proj_name} </span>
 						<span
 							>hours for {currentMonthName}
 							{new Date().getFullYear()}</span
@@ -180,30 +186,40 @@
 				</tr>
 				<tr class="h5">
 					<th><span class="pl-5">Date</span></th>
-					<th><span class="pl-3">Hours</span></th>
+					<th colspan="2"><span class="pl-3">Hours</span></th>
 					<th></th>
 				</tr>
 			</thead>
 			<tbody>
-				{#each hours as entry (entry.id)}
-					<tr class="group">
-						<td><span class="pl-10">{formatDate(entry.date_worked)}</span></td>
-						<td><span class="pl-10">{entry.hours_entered}</span></td>
-						<td>
-							<button
-								class="btn btn-sm variant-filled-error opacity-0 group-hover:opacity-100 transition-opacity duration-300 ease-in-out"
-								on:click={() => deleteHour(entry.id)}
-							>
-								-
-							</button>
-						</td>
+				{#if hours.length === 0}
+					<tr>
+						<td colspan="3" class="text-center">You have no hours entered for {currentMonthName}</td
+						>
 					</tr>
-				{/each}
+				{:else}
+					{#each hours as entry (entry.id)}
+						<tr class="group" on:click={() => toggleDeleteButton(entry.id)}>
+							<td><span class="pl-10">{formatDate(entry.date_worked)}</span></td>
+							<td><span class="pl-10">{entry.hours_entered}</span></td>
+							<td colspan="2">
+								<button
+									class="btn btn-sm variant-filled-error invisible opacity-0 group-hover:opacity-100 group-hover:visible transition-opacity duration-300 ease-in-out {activeDeleteButton ===
+									entry.id
+										? 'opacity-100 visible'
+										: ''}"
+									on:click={() => deleteHour(entry.id)}
+								>
+									-
+								</button>
+							</td>
+						</tr>
+					{/each}
+				{/if}
 			</tbody>
 			<tfoot>
 				<tr class="variant-soft-tertiary">
 					<td></td>
-					<td class="h4 font-bold" colspan="2"
+					<td class="h4 font-bold" colspan="3"
 						>Month Total: <span class="text-primary-500">{totalHours}</span></td
 					>
 				</tr>

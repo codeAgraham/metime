@@ -8,7 +8,7 @@
 			<div>
 				<h1 class="h1 !text-4xl md:!text-6xl max-w-[600px]">
 					Keep track of all your freelance time,
-					<span class="font-bold">meTime</span>
+					<span class="font-bold">MeTime</span>
 				</h1>
 				<a href="/login" class="btn variant-filled-primary mt-3"><span>Sign In</span></a>
 				<a href="/signup" class="btn variant-soft-primary mt-3"><span>Sign Up</span></a>

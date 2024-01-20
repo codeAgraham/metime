@@ -11,7 +11,6 @@
 		getDrawerStore
 	} from '@skeletonlabs/skeleton';
 	import DropNav from '$lib/components/DropNav.svelte';
-	import hourGlass from '$lib/assets/images/hourglass_logo.svg';
 
 	// Floating UI for Popups
 	import { computePosition, autoUpdate, flip, shift, offset, arrow } from '@floating-ui/dom';

@@ -4,6 +4,7 @@
 	import { ProgressBar } from '@skeletonlabs/skeleton';
 	import eyeShow from '$lib/assets/images/eye-show.svg';
 	import eyeHide from '$lib/assets/images/eye-hide.svg';
+	import { goto } from '$app/navigation';
 
 	let email = '';
 	let password = '';
@@ -95,7 +96,17 @@
 	}
 
 	async function registerUser() {
-		// Registration logic
+		const response = await fetch('/register', {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json'
+			},
+			body: JSON.stringify({ email, password, fname, lname })
+		});
+
+		if (response.ok) {
+			goto('/login?newsignup=true');
+		}
 	}
 
 	function onCompleteHandler(e: Event): void {

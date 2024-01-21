@@ -1,21 +1,21 @@
 <script lang="ts">
 	import { Stepper, Step } from '@skeletonlabs/skeleton';
 	import { z } from 'zod';
-	import { goto } from '$app/navigation';
+	import { ProgressBar } from '@skeletonlabs/skeleton';
+	import eyeShow from '$lib/assets/images/eye-show.svg';
+	import eyeHide from '$lib/assets/images/eye-hide.svg';
 
-	// Variables
 	let email = '';
 	let password = '';
-	let passwordConfirm = '';
 	let fname = '';
 	let lname = '';
 
-	let message;
+	let passwordStrengthScore = 0;
+	let progressBarColor = '';
+	let showPassword = false;
 
-	// Validation states
 	let emailValidationState = '';
-	let passwordValidationState = '';
-	let passwordConfirmValidationState = '';
+
 	let passwordCriteria = {
 		minLength: { valid: false, message: 'At least 8 characters' },
 		upperCase: { valid: false, message: 'At least one uppercase letter' },
@@ -29,7 +29,6 @@
 	let passwordLockedState = true;
 	let nameLockedState = true;
 
-	// Zod schemas
 	const emailSchema = z.string().email();
 	const passwordSchema = z
 		.string()
@@ -58,23 +57,7 @@
 		emailLockedState = true;
 	}
 
-	$: {
-		if (passwordSchema.safeParse(password).success) {
-			passwordValidationState = 'input-success';
-			// Set passwordConfirm to error if password is valid but they don't match
-			passwordConfirmValidationState = password !== passwordConfirm ? 'input-error' : '';
-		} else {
-			passwordValidationState = '';
-		}
-
-		// Set both to success if passwords match and are valid
-		if (password === passwordConfirm && passwordSchema.safeParse(password).success) {
-			passwordValidationState = 'input-success';
-			passwordConfirmValidationState = 'input-success';
-			passwordLockedState = false;
-		}
-	}
-
+	// Update password criteria
 	$: {
 		passwordCriteria.minLength.valid = password.length >= 8;
 		passwordCriteria.upperCase.valid = /[A-Z]/.test(password);
@@ -82,57 +65,46 @@
 		passwordCriteria.number.valid = /[0-9]/.test(password);
 		passwordCriteria.specialChar.valid = /[!@#$%^&*(),.?":{}|<>]/.test(password);
 
-		// Update overall password validation state based on all criteria
-		passwordValidationState = Object.values(passwordCriteria).every((c) => c.valid)
-			? 'input-success'
-			: '';
+		// Calculate password strength score
+		passwordStrengthScore = Object.values(passwordCriteria).filter((c) => c.valid).length;
+
+		// Update the progress bar color based on the score
+		progressBarColor =
+			passwordStrengthScore === 1
+				? 'bg-error-500'
+				: passwordStrengthScore === 2
+					? 'bg-warning-500'
+					: passwordStrengthScore === 3
+						? 'bg-tertiary-500'
+						: passwordStrengthScore === 4
+							? 'bg-secondary-500'
+							: passwordStrengthScore === 5
+								? 'bg-success-500'
+								: '';
 	}
 
 	$: {
-		const isPasswordValid = passwordSchema.safeParse(password).success;
-		const doPasswordsMatch = password === passwordConfirm;
-
-		passwordValidationState = isPasswordValid ? 'input-success' : '';
-		passwordConfirmValidationState = isPasswordValid && !doPasswordsMatch ? 'input-error' : '';
-
-		if (isPasswordValid && doPasswordsMatch) {
-			passwordValidationState = 'input-success';
-			passwordConfirmValidationState = 'input-success';
-			passwordLockedState = false;
-		} else {
-			passwordLockedState = true; // Relock if the condition is not met
-		}
+		passwordLockedState = password.length < 8; // Unlock if password is entered
 	}
 
+	// Validate first and last name
 	$: {
 		const isFnameValid = nameSchema.safeParse(fname).success;
 		const isLnameValid = nameSchema.safeParse(lname).success;
-
-		if (isFnameValid && isLnameValid) {
-			nameValidationState = 'input-success';
-			nameLockedState = false;
-		} else {
-			nameValidationState = '';
-			nameLockedState = true;
-		}
+		nameLockedState = !(isFnameValid && isLnameValid);
 	}
 
 	async function registerUser() {
-		const response = await fetch('/register', {
-			method: 'POST',
-			headers: {
-				'Content-Type': 'application/json'
-			},
-			body: JSON.stringify({ email, password, fname, lname })
-		});
-
-		if (response.ok) {
-			goto('/login?newsignup=true');
-		}
+		// Registration logic
 	}
 
 	function onCompleteHandler(e: Event): void {
 		registerUser();
+	}
+
+	// Toggle password visibility
+	function togglePasswordVisibility() {
+		showPassword = !showPassword;
 	}
 </script>
 
@@ -155,40 +127,32 @@
 				/>
 			</Step>
 			<Step locked={passwordLockedState}>
-				<svelte:fragment slot="header">
-					<p class="my-10">Choose a password</p>
-				</svelte:fragment>
-				<input
-					type="password"
-					name="password"
-					id="password"
-					class="input {passwordValidationState}"
-					placeholder="enter a password"
-					autocomplete="new-password"
-					bind:value={password}
-				/>
-				<input
-					type="password"
-					name="password_confirm"
-					id="password_confirm"
-					class="input !mb-4 {passwordConfirmValidationState}"
-					placeholder="confirm password"
-					autocomplete="new-password"
-					bind:value={passwordConfirm}
-				/>
-				<div class="w-full flex justify-center">
-					<ul class="text-xs">
-						{#each Object.values(passwordCriteria) as criterion}
-							<li class={criterion.valid ? 'text-success-500' : 'text-primary-500 ml-2'}>
-								{#if criterion.valid}
-									<span>✅</span>
-								{/if}
-								{criterion.message}
-							</li>
-						{/each}
-					</ul>
+				<p class="mt-12">Choose a password - Minimum 8 Characters</p>
+				<div class="input-group flex">
+					<input
+						type="password"
+						bind:value={password}
+						class={!showPassword ? 'input visible' : 'hidden'}
+					/>
+					<input
+						type="text"
+						bind:value={password}
+						class={showPassword ? 'input visible' : 'hidden'}
+					/>
+					<button class="input-group-shim" on:click={togglePasswordVisibility}>
+						<img
+							src={showPassword ? eyeHide : eyeShow}
+							alt={showPassword ? 'Hide Password' : 'Show Password'}
+							class="w-5 h-5"
+						/>
+					</button>
+				</div>
+				<div class="w-full flex items-center my-6">
+					<p class="text-xs">Password Strength</p>
+					<ProgressBar value={passwordStrengthScore} max={5} meter={progressBarColor} />
 				</div>
 			</Step>
+
 			<Step locked={nameLockedState}>
 				<svelte:fragment slot="header">
 					<p class="my-10">Enter your name</p>

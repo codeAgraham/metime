@@ -37,7 +37,7 @@
 	const popupHover: PopupSettings = {
 		event: 'hover',
 		target: 'popupHover',
-		placement: 'top'
+		placement: 'bottom'
 	};
 
 	let projects: any[];
@@ -61,9 +61,9 @@
 	}
 </script>
 
-<div class="card p-4 variant-filled-secondary" data-popup="popupHover">
+<div class="card p-4 variant-filled-primary" data-popup="popupHover">
 	<p>Add New Project</p>
-	<div class="arrow variant-filled-secondary" />
+	<div class="arrow variant-filled-primary" />
 </div>
 
 <div class="flex-col justify-center items-center w-full h-screen space-y-4 pt-10">
@@ -97,12 +97,7 @@
 						<ListBox spacing="space-y-2">
 							{#each projects as project}
 								<div class="card variant-filled-secondary">
-									<ListBoxItem
-										hover="hover:variant-filled-primary"
-										bind:group={selectItemId}
-										name="project"
-										value={project.id}
-									>
+									<ListBoxItem bind:group={selectItemId} name="project" value={project.id}>
 										<span class="flex justify-center capitalize text-1xl md:text-3xl p-2">
 											{project.proj_name}
 										</span>
@@ -113,10 +108,9 @@
 						<div class="w-full flex justify-center mt-4">
 							<a
 								href="/addproject"
-								class="badge variant-filled-secondary w-6 h-6"
+								class="badge variant-filled-primary w-8 h-8"
 								use:popup={popupHover}>+</a
 							>
-							<p class="pl-2">Add New Project</p>
 						</div>
 					{:else}
 						<div class="text-center p-4">

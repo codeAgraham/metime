@@ -11,16 +11,16 @@
 	const project = data.project[0];
 
 	// Reactive statement to update the submit button state
-	$: isSubmitEnabled = sliderValue >= 1;
+	$: isSubmitEnabled = sliderValue >= 0.5;
 
-	// Function to reset custom validation message
-	function handleDateChange(event) {
-		event.target.setCustomValidity('');
+	function handleDateChange(event: Event) {
+		const input = event.target as HTMLInputElement;
+		input.setCustomValidity('');
 	}
 
-	// Function to set custom validation message
-	function handleInvalidDate(event) {
-		event.target.setCustomValidity('A full date is required.');
+	function handleInvalidDate(event: Event) {
+		const input = event.target as HTMLInputElement;
+		input.setCustomValidity('A full date is required.');
 	}
 </script>
 
@@ -37,7 +37,14 @@
 				method="post"
 				class="w-full text-center flex flex-col justify-center items-center space-y-16"
 			>
-				<input type="range" name="hours" bind:value={sliderValue} max="24" class="w-3/6 mt-8" />
+				<input
+					type="range"
+					name="hours"
+					bind:value={sliderValue}
+					step=".5"
+					max="24"
+					class="w-full md:w-4/6 mt-8"
+				/>
 				<input
 					type="date"
 					name="date"

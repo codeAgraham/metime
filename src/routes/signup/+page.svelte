@@ -119,7 +119,7 @@
 	}
 </script>
 
-<div class="flex flex-col items-center mt-14 h-full">
+<div class="flex flex-col items-center mt-14 h-full md:justify-center md:mt-auto">
 	<div class="w-11/12 md:w-2/5 card p-6 md:p-14 min-h-fit">
 		<Stepper on:complete={onCompleteHandler}>
 			<Step locked={emailLockedState}>
@@ -143,12 +143,12 @@
 					<input
 						type="password"
 						bind:value={password}
-						class={!showPassword ? 'input visible' : 'hidden'}
+						class={!showPassword ? 'input visible text-black dark:text-white' : 'hidden'}
 					/>
 					<input
 						type="text"
 						bind:value={password}
-						class={showPassword ? 'input visible' : 'hidden'}
+						class={showPassword ? 'input visible text-black dark:text-white' : 'hidden'}
 					/>
 					<button class="input-group-shim" on:click={togglePasswordVisibility}>
 						<img

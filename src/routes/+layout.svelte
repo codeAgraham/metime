@@ -11,10 +11,12 @@
 		getDrawerStore
 	} from '@skeletonlabs/skeleton';
 	import DropNav from '$lib/components/DropNav.svelte';
+	import { page } from '$app/stores';
 
 	// Floating UI for Popups
 	import { computePosition, autoUpdate, flip, shift, offset, arrow } from '@floating-ui/dom';
 	import { storePopup } from '@skeletonlabs/skeleton';
+	import { el } from 'date-fns/locale';
 	storePopup.set({ computePosition, autoUpdate, flip, shift, offset, arrow });
 
 	initializeStores();
@@ -39,7 +41,7 @@
 </Drawer>
 
 <!-- App Shell -->
-<AppShell regionPage="custom-gradient">
+<AppShell>
 	<svelte:fragment slot="header">
 		<!-- App Bar -->
 		<AppBar

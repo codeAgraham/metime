@@ -67,6 +67,7 @@
 			type: 'confirm',
 			title: 'Please Confirm',
 			body: 'Are you sure you wish to delete this hour?',
+			buttonTextConfirm: 'Delete',
 			response: async (confirmDelete: boolean) => {
 				if (confirmDelete) {
 					try {
@@ -117,7 +118,7 @@
 			type: 'confirm',
 			title: 'Confirm Deletion',
 			body: `Are you sure you want to delete ${proj_name}? This cannot be undone!`,
-			buttonTextConfirm: 'Yes, delete this project forever',
+			buttonTextConfirm: 'Delete Forever',
 			response: (confirm: boolean) => {
 				if (confirm) {
 					performDeletion();

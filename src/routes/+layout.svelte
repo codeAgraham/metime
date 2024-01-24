@@ -35,7 +35,7 @@
 <svelte:head><title>metime$</title></svelte:head>
 
 <Toast color="variant-filled-success" position="t" />
-<Modal buttonPositive="variant-filled-primary" />
+<Modal buttonPositive="variant-filled-primary" padding="p-6" />
 <Drawer position="top">
 	<DropNav onCloseMenu={handleCloseMenu} />
 </Drawer>

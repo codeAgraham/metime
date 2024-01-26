@@ -2,9 +2,13 @@
 	import type { PageData } from './$types';
 	import BreadCrumb from '$lib/components/BreadCrumb.svelte';
 	import { page } from '$app/stores';
+	import { enhance, applyAction } from '$app/forms';
+	import { goto } from '$app/navigation';
+	import { ProgressRadial } from '@skeletonlabs/skeleton';
 
 	export let data: PageData;
 
+	let loading = false;
 	let sliderValue = 0;
 	let isSubmitEnabled = false;
 
@@ -36,15 +40,30 @@
 			<form
 				method="post"
 				class="w-full text-center flex flex-col justify-center items-center space-y-16"
+				use:enhance={() => {
+					loading = true;
+					return async ({ update, result }) => {
+						await update();
+						await applyAction(result);
+						if (result.type === 'success') {
+							goto(`/projects/${project.id}?success=true&projectadded=true`);
+						}
+					};
+				}}
 			>
-				<input
-					type="range"
-					name="hours"
-					bind:value={sliderValue}
-					step=".5"
-					max="24"
-					class="w-full md:w-4/6 mt-8"
-				/>
+				{#if !loading}
+					<input
+						type="range"
+						name="hours"
+						bind:value={sliderValue}
+						step=".5"
+						max="24"
+						class="w-full md:w-4/6 mt-8"
+					/>
+				{:else}
+					<ProgressRadial value={undefined} width="w-12" />
+				{/if}
+
 				<input
 					type="date"
 					name="date"
@@ -57,9 +76,16 @@
 				<p class="h1 text-8xl mt-8">{sliderValue}</p>
 				<input type="number" name="proj_id" value={project.id} hidden />
 				<input type="text" name="proj_name" bind:value={project.proj_name} hidden />
-				<button class="btn btn-lg variant-filled-primary w-3/5" disabled={!isSubmitEnabled}
-					>Submit</button
+				<button
+					class="btn btn-lg variant-filled-primary w-3/5"
+					disabled={!isSubmitEnabled || loading}
 				>
+					{#if loading}
+						<ProgressRadial value={undefined} width="w-6" />
+					{:else}
+						Submit
+					{/if}
+				</button>
 			</form>
 		</div>
 	</div>

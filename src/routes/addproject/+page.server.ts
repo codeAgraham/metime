@@ -1,5 +1,4 @@
 import type { Actions } from '@sveltejs/kit';
-import { redirect } from '@sveltejs/kit';
 
 export const actions: Actions = {
 	default: async ({ locals, request }) => {
@@ -12,10 +11,12 @@ export const actions: Actions = {
 			.insert({ proj_name: projName, user_id: user?.user.id });
 
 		if (error) {
-			console.log('Error inserting new project');
-			throw new Error('Failed to insert project');
+			console.error('Error inserting new project:', error);
+			throw new Error('Failed to add new Project');
 		} else {
-			throw redirect(303, `/projects?success=true&projectadded=true`);
+			return {
+				success: true
+			};
 		}
 	}
 };

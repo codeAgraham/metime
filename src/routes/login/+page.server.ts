@@ -23,6 +23,6 @@ export const actions = {
 			throw error(401, `Your login attempt failed. ${err.message}`);
 		}
 
-		throw redirect(303, '/projects');
+		return { success: true };
 	}
 };

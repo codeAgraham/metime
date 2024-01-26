@@ -94,15 +94,13 @@
 			<svelte:fragment slot="panel">
 				{#if tabSet === 0}
 					{#if projects && projects.length > 0}
-						<ListBox spacing="space-y-2">
+						<ListBox spacing="space-y-2" active="variant-filled-secondary">
 							{#each projects as project}
-								<div class="card variant-filled-secondary">
-									<ListBoxItem bind:group={selectItemId} name="project" value={project.id}>
-										<span class="flex justify-center capitalize text-1xl md:text-3xl p-2">
-											{project.proj_name}
-										</span>
-									</ListBoxItem>
-								</div>
+								<ListBoxItem bind:group={selectItemId} name="project" value={project.id}>
+									<span class="flex justify-center capitalize text-1xl md:text-3xl p-2">
+										{project.proj_name}
+									</span>
+								</ListBoxItem>
 							{/each}
 						</ListBox>
 						<div class="w-full flex justify-center mt-4">

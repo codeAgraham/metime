@@ -40,12 +40,15 @@
 	}
 </script>
 
-<div class="w-full flex flex-col justify-center items-center">
+<div class="w-full flex flex-col justify-center items-center p-6">
 	<BreadCrumb proj_id={projectId} proj_name={projName} currentUrl={currentURL} />
-	<div class="card w-11/12 md:w-3/5 p-4">
-		<h1 class="h2 card-header font-bold">
-			<span class="capitalize text-primary-500">{projName} </span>History
-		</h1>
+	<div class="card w-11/12 md:w-4/5 mt-6">
+		<div class="w-full flex justify-between items-center">
+			<h1 class="h2 card-header font-bold text-primary-500">
+				{projName}
+			</h1>
+			<p class="h3 p-6 font-bold text-secondary-700-200-token">History</p>
+		</div>
 		<section class="p-4">
 			{#if formattedMonths && formattedMonths.length > 0}
 				<ListBox>

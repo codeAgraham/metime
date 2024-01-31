@@ -36,20 +36,19 @@ export const load: PageServerLoad = async ({ locals, params, url }) => {
 		throw error(500, 'Failed to fetch entries');
 	}
 
-	const { data: projectName, error: projectNameError } = await locals.supabase
+	const { data: project, error: projectError } = await locals.supabase
 		.from('projects')
-		.select('proj_name')
+		.select('*')
 		.eq('id', projectId);
 
-	if (projectNameError) {
+	if (projectError) {
 		throw error(500, 'Failed to fetch project name.');
 	}
 
 	// Return the entries
 	return {
 		entries,
-		projectName,
-		monthParam,
-		projectId
+		project,
+		monthParam
 	};
 };

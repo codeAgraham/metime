@@ -7,8 +7,7 @@
 	export let data: PageData;
 
 	let entries: any[];
-	let projectName: string;
-	let projectId: string;
+	let project: { id: any; proj_name: any; hourly_rate: any };
 	let formattedMonth: string;
 	let totalHours = 0;
 	let currentUrl = $page.url;
@@ -21,8 +20,8 @@
 		totalHours = entries.reduce((sum, entry) => sum + entry.hours_entered, 0);
 	}
 
-	if (data.projectName) {
-		projectName = data.projectName[0].proj_name;
+	if (data.project) {
+		project = data.project[0];
 	}
 
 	if (data.monthParam) {
@@ -30,14 +29,12 @@
 		formattedMonth = format(monthDate, 'MMMM, yyyy');
 	}
 
-	if (data.projectId) {
-		projectId = data.projectId;
-	}
+	$: billedForMonth = (project.hourly_rate * totalHours).toFixed(2);
 </script>
 
 <div class="flex flex-col items-center w-full">
-	<BreadCrumb proj_id={projectId} proj_name={projectName} {currentUrl} />
-	<div class="table-container !w-11/12">
+	<BreadCrumb proj_id={project.id} proj_name={project.proj_name} {currentUrl} />
+	<div class="table-container w-11/12 md:w-3/5 mt-8">
 		<table class="table table-hover">
 			<thead>
 				<tr>
@@ -56,7 +53,11 @@
 			<tfoot>
 				<tr>
 					<th>Total for month</th>
-					<td class="font-bold">{totalHours}</td>
+					<td class="font-bold text-primary-800-100-token">{totalHours}</td>
+				</tr>
+				<tr>
+					<th>Amount billed for {formattedMonth}</th>
+					<td class="font-bold text-success-800-100-token">${billedForMonth}</td>
 				</tr>
 			</tfoot>
 		</table>

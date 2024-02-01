@@ -1,28 +1,26 @@
 import type { PageServerLoad } from './$types';
 import { fail } from '@sveltejs/kit';
-import { startOfMonth, endOfMonth, formatISO } from 'date-fns';
 
 export const load: PageServerLoad = async ({ locals, params }) => {
+	const timeZone = 'UTC'; // Specify your desired time zone
+	const formatter = new Intl.DateTimeFormat('en-US', {
+		timeZone,
+		year: 'numeric',
+		month: '2-digit',
+		day: '2-digit'
+	});
+
 	const currentDate = new Date();
-	const firstDayOfMonth = startOfMonth(currentDate);
-	const lastDayOfMonth = endOfMonth(currentDate);
+	const firstDayOfMonth = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1);
+	const lastDayOfMonth = new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 0);
 
-	const firstDayISO = formatISO(firstDayOfMonth);
-	const lastDayISO = formatISO(lastDayOfMonth);
-
-	console.log('First Day: ', firstDayISO);
-	console.log('Last Day: ', lastDayISO);
+	// Format dates in the specified time zone
+	const firstDayISO = formatter.format(firstDayOfMonth) + 'T00:00:00Z';
+	const lastDayISO = formatter.format(lastDayOfMonth) + 'T23:59:59Z';
 
 	const { data: projectWithHours, error } = await locals.supabase
 		.from('projects')
-		.select(
-			`
-            *,
-            hours (
-                *
-            )
-        `
-		)
+		.select(`*, hours (*)`)
 		.eq('id', params.proj_id)
 		.gte('hours.date_worked', firstDayISO)
 		.lte('hours.date_worked', lastDayISO)
@@ -32,9 +30,7 @@ export const load: PageServerLoad = async ({ locals, params }) => {
 		return fail(500, { message: 'Failed to load project.' });
 	}
 
-	return {
-		projectWithHours
-	};
+	return { projectWithHours };
 };
 
 /** @type {import('./$types').Actions} */

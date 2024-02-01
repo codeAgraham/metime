@@ -1,11 +1,14 @@
 import type { PageServerLoad } from './$types';
 import { fail } from '@sveltejs/kit';
+import { startOfMonth, endOfMonth, formatISO } from 'date-fns';
 
 export const load: PageServerLoad = async ({ locals, params }) => {
-	// Get the first and last day of the current month
 	const currentDate = new Date();
-	const firstDayOfMonth = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1);
-	const lastDayOfMonth = new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 0);
+	const firstDayOfMonth = startOfMonth(currentDate);
+	const lastDayOfMonth = endOfMonth(currentDate);
+
+	const firstDayISO = formatISO(firstDayOfMonth);
+	const lastDayISO = formatISO(lastDayOfMonth);
 
 	const { data: projectWithHours, error } = await locals.supabase
 		.from('projects')
@@ -18,8 +21,8 @@ export const load: PageServerLoad = async ({ locals, params }) => {
         `
 		)
 		.eq('id', params.proj_id)
-		.gte('hours.date_worked', firstDayOfMonth.toISOString())
-		.lte('hours.date_worked', lastDayOfMonth.toISOString())
+		.gte('hours.date_worked', firstDayISO)
+		.lte('hours.date_worked', lastDayISO)
 		.single();
 
 	if (error) {

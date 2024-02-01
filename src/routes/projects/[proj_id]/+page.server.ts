@@ -10,6 +10,9 @@ export const load: PageServerLoad = async ({ locals, params }) => {
 	const firstDayISO = formatISO(firstDayOfMonth);
 	const lastDayISO = formatISO(lastDayOfMonth);
 
+	console.log('First Day: ', firstDayISO);
+	console.log('Last Day: ', lastDayISO);
+
 	const { data: projectWithHours, error } = await locals.supabase
 		.from('projects')
 		.select(

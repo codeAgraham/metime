@@ -230,7 +230,7 @@
 						<td
 							><a
 								href={`/projects/addhours?projectId=${id}`}
-								class="btn btn-md variant-filled-tertiary w-60">+ Add hours</a
+								class="btn btn-md variant-filled-tertiary md:w-60">+ Add hours</a
 							></td
 						>
 						<td class="h4 font-bold" colspan="3"

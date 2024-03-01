@@ -196,13 +196,13 @@
 	</ol>
 
 	<div class="container mx-auto">
-		<div class="card mx-4">
+		<div class="mx-4 pb-10">
 			<section class="w-full flex items-center justify-between">
 				<h2 class="h2 capitalize pt-4 px-8 tracking-tighter antialiased font-semibold">
 					{proj_name}
 				</h2>
 			</section>
-			<div class="grid grid-cols-1 md:grid-cols-2 grid-rows-1 gap-4 p-4">
+			<div class="grid grid-cols-1 md:grid-cols-2 grid-rows-1 gap-4 min-h-[650px]">
 				<div class="table-container table-interactive drop-shadow-md">
 					<table class="table table-hover h-full">
 						<thead>

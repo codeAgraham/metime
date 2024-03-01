@@ -27,11 +27,17 @@
 
 	function formatMonths(dates: string[]): { formatted: string; original: string }[] {
 		return dates.map((date) => {
-			const parsedDate: Date = parse(date, 'yyyy-MM', new Date());
-			const formattedDate: string = format(parsedDate, 'MMMM, yyyy');
-			return { formatted: formattedDate, original: date };
+			try {
+				const parsedDate: Date = parse(date, 'yyyy-MM', new Date());
+				const formattedDate: string = format(parsedDate, 'MMMM, yyyy');
+				return { formatted: formattedDate, original: date };
+			} catch (error) {
+				console.error('Error parsing date:', date, error);
+				return { formatted: 'Invalid Date', original: date };
+			}
 		});
 	}
+
 	const formattedMonths: { formatted: string; original: string }[] =
 		formatMonths(monthsWithEntries);
 
@@ -44,10 +50,10 @@
 	<BreadCrumb proj_id={projectId} proj_name={projName} currentUrl={currentURL} />
 	<div class="card w-11/12 md:w-4/5 mt-6">
 		<div class="w-full flex justify-between items-center">
-			<h1 class="h2 card-header font-bold text-primary-500">
+			<h1 class="h2 card-header font-bold text-primary-500 capitalize">
 				{projName}
 			</h1>
-			<p class="h3 p-6 font-bold text-secondary-700-200-token">History</p>
+			<p class="text-lg p-6">History</p>
 		</div>
 		<section class="p-4">
 			{#if formattedMonths && formattedMonths.length > 0}

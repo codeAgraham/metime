@@ -11,12 +11,11 @@
 		getDrawerStore
 	} from '@skeletonlabs/skeleton';
 	import DropNav from '$lib/components/DropNav.svelte';
-	import { page } from '$app/stores';
+	import 'iconify-icon';
 
 	// Floating UI for Popups
 	import { computePosition, autoUpdate, flip, shift, offset, arrow } from '@floating-ui/dom';
 	import { storePopup } from '@skeletonlabs/skeleton';
-	import { el } from 'date-fns/locale';
 	storePopup.set({ computePosition, autoUpdate, flip, shift, offset, arrow });
 
 	initializeStores();

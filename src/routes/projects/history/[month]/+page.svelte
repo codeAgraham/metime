@@ -1,6 +1,6 @@
 <script lang="ts">
 	import type { PageData } from './$types';
-	import { format, parse } from 'date-fns';
+	import { format, parse, parseISO } from 'date-fns';
 	import BreadCrumb from '$lib/components/BreadCrumb.svelte';
 	import { page } from '$app/stores';
 
@@ -12,14 +12,26 @@
 	let totalHours = 0;
 	let currentUrl = $page.url;
 
-	if (data.entries) {
-		entries = data.entries.map((entry) => ({
-			...entry,
-			formattedDate: format(parse(entry.date_worked, 'yyyy-MM-dd', new Date()), 'MMMM dd, yyyy')
-		}));
-		totalHours = entries.reduce((sum, entry) => sum + entry.hours_entered, 0);
+	// Simple utility to ensure UTC dates are formatted to their literal calendar day
+	function formatDateKeepingUTC(dateStr: string) {
+		// Extract the date part (yyyy-MM-dd) directly from the ISO string
+		const datePart = dateStr.split('T')[0];
+		// Parse this date part as if it's the full timestamp, avoiding timezone offsets
+		const date = parseISO(datePart);
+		// Format the date for display
+		return format(date, 'MMMM dd, yyyy');
 	}
 
+	if (data.entries) {
+		entries = data.entries
+			.map((entry) => ({
+				...entry,
+				formattedDate: formatDateKeepingUTC(entry.date_worked)
+			}))
+			// Sort the entries by date_worked in ascending order
+			.sort((a, b) => a.date_worked.localeCompare(b.date_worked));
+		totalHours = entries.reduce((sum, entry) => sum + entry.hours_entered, 0);
+	}
 	if (data.project) {
 		project = data.project[0];
 	}

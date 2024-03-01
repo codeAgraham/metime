@@ -2,10 +2,12 @@
 	import { page } from '$app/stores';
 	import type { PageData } from './$types';
 	import {
+		popup,
 		getModalStore,
 		getToastStore,
 		type ToastSettings,
-		type ModalSettings
+		type ModalSettings,
+		type PopupSettings
 	} from '@skeletonlabs/skeleton';
 	import { onMount } from 'svelte';
 	import { goto } from '$app/navigation';
@@ -18,7 +20,7 @@
 	export let data: PageData;
 
 	const { proj_name, id } = data.projectWithHours;
-	let { hourly_rate } = data.projectWithHours;
+	let { hourly_rate, contact_name, contact_email } = data.projectWithHours;
 	const currenURL = $page.url;
 	let hours: any[] = [];
 	let activeDeleteButton: null = null;
@@ -36,9 +38,15 @@
 		'November',
 		'December'
 	];
-
 	let today = new Date();
 	let currentMonthName = monthNames[today.getMonth()];
+	let showOptions: boolean = false;
+
+	const popupHover: PopupSettings = {
+		event: 'hover',
+		target: 'popupHover',
+		placement: 'top'
+	};
 
 	if (!hourly_rate) {
 		hourly_rate = 0.0;
@@ -68,6 +76,10 @@
 	}, 0);
 
 	$: billableThisMonth = (totalHours * hourly_rate).toFixed(2);
+
+	const toggleOptions = () => {
+		showOptions = !showOptions;
+	};
 
 	async function deleteHour(hourId: number) {
 		const modal: ModalSettings = {
@@ -171,6 +183,11 @@
 	});
 </script>
 
+<div class="card p-4 variant-filled-surface z-10" data-popup="popupHover">
+	<p>Project Settings</p>
+	<div class="arrow variant-filled-surface" />
+</div>
+
 <div class="w-full justify-center">
 	<ol class="breadcrumb p-4">
 		<li class="crumb"><a class="anchor" href="/projects">Dashboard</a></li>
@@ -178,102 +195,156 @@
 		<li class="crumb"><a class="anchor capitalize" href={currenURL.toString()}>{proj_name}</a></li>
 	</ol>
 
-	<div class="grid grid-cols-1 md:grid-cols-3 grid-rows-1 gap-4 p-4">
-		<div class="table-container table-interactive col-span-2">
-			<table class="table table-hover">
-				<thead>
-					<tr>
-						<th colspan="3" class="h3 text-center">
-							<span class="text-primary-500 pl-4">{proj_name} </span>
-							<span
-								>hours for {currentMonthName}
-								{new Date().getFullYear()}</span
-							>
-						</th>
-						<th></th>
-					</tr>
-					<tr class="h5">
-						<th><span class="pl-5">Date</span></th>
-						<th colspan="2"><span class="pl-3">Hours</span></th>
-						<th></th>
-					</tr>
-				</thead>
-				<tbody>
-					{#if hours.length === 0}
-						<tr>
-							<td colspan="3" class="text-center"
-								>You have no hours entered for {currentMonthName}</td
-							>
-						</tr>
-					{:else}
-						{#each hours as entry (entry.id)}
-							<tr class="group" on:click={() => toggleDeleteButton(entry.id)}>
-								<td><span class="pl-10">{formatDate(entry.date_worked)}</span></td>
-								<td><span class="pl-10">{entry.hours_entered}</span></td>
-								<td colspan="2">
-									<button
-										class="btn btn-sm variant-filled-error invisible opacity-0 group-hover:opacity-100 group-hover:visible transition-opacity duration-300 ease-in-out {activeDeleteButton ===
-										entry.id
-											? 'opacity-100 visible'
-											: ''}"
-										on:click={() => deleteHour(entry.id)}
+	<div class="container mx-auto">
+		<div class="card mx-4">
+			<section class="w-full flex items-center justify-between">
+				<h2 class="h2 capitalize pt-4 px-8 tracking-tighter antialiased font-semibold">
+					{proj_name}
+				</h2>
+			</section>
+			<div class="grid grid-cols-1 md:grid-cols-2 grid-rows-1 gap-4 p-4">
+				<div class="table-container table-interactive drop-shadow-md">
+					<table class="table table-hover h-full">
+						<thead>
+							<tr>
+								<th colspan="3" class="h3 text-center">
+									<span
+										>hours for {currentMonthName}
+										{new Date().getFullYear()}</span
 									>
-										-
-									</button>
-								</td>
+								</th>
 							</tr>
-						{/each}
-					{/if}
-				</tbody>
-				<tfoot>
-					<tr class="variant-soft-tertiary">
-						<td
-							><a
-								href={`/projects/addhours?projectId=${id}`}
-								class="btn btn-md variant-filled-tertiary md:w-60">+ Add hours</a
-							></td
-						>
-						<td class="h4 font-bold" colspan="3"
-							>Hours this month: <span class="text-primary-500">{totalHours}</span></td
-						>
-					</tr>
-				</tfoot>
-			</table>
-		</div>
-		<div class="space-y-4">
-			<div class="card variant-filled-success min-h-[220px] flex flex-col justify-center">
-				<div class="card-header">
-					<h2 class="h3 text-center">Amount billable this month</h2>
+							<tr class="h5">
+								<th><span class="pl-5">Date</span></th>
+								<th colspan="2"><span class="pl-3">Hours</span></th>
+							</tr>
+						</thead>
+						<tbody>
+							{#if hours.length === 0}
+								<tr>
+									<td colspan="2" class="text-center"
+										>You have no hours entered for {currentMonthName}</td
+									>
+								</tr>
+							{:else}
+								{#each hours as entry (entry.id)}
+									<tr class="group" on:click={() => toggleDeleteButton(entry.id)}>
+										<td><span class="pl-10">{formatDate(entry.date_worked)}</span></td>
+										<td><span class="pl-10">{entry.hours_entered}</span></td>
+										<td colspan="2">
+											<button
+												class="btn btn-sm variant-filled-error invisible opacity-0 group-hover:opacity-100 group-hover:visible transition-opacity duration-300 ease-in-out {activeDeleteButton ===
+												entry.id
+													? 'opacity-100 visible'
+													: ''}"
+												on:click={() => deleteHour(entry.id)}
+											>
+												-
+											</button>
+										</td>
+									</tr>
+								{/each}
+							{/if}
+						</tbody>
+						<tfoot>
+							<tr class="variant-soft-tertiary">
+								<td
+									><a
+										href={`/projects/addhours?projectId=${id}`}
+										class="btn btn-md variant-filled-tertiary">+ Add hours</a
+									></td
+								>
+								<td class="h4 font-bold" colspan="3"
+									>Hours this month: <span class="text-primary-500">{totalHours}</span></td
+								>
+							</tr>
+						</tfoot>
+					</table>
 				</div>
-				<section class="p-4">
-					<div class="text-center text-6xl font-extrabold">${billableThisMonth}</div>
-				</section>
-			</div>
-			<div class="card min-h-[220px] flex flex-col justify-center items-center">
-				<div class="card-header">
-					<h2 class="h3 text-center">Project options</h2>
-				</div>
-				<section class="p-4 flex flex-col justify-center items-center space-y-4">
-					<form action="?/updateWage" method="post">
-						<p class="text-center pb-2">Hourly rate</p>
-						<div class="input-group input-group-divider grid-cols-[auto_1fr_auto]">
-							<input
-								type="number"
-								placeholder="enter hourly rate"
-								bind:value={hourly_rate}
-								name="wage"
-							/>
-							<input type="hidden" value={id} name="id" />
-							<button class="variant-filled-success">Submit</button>
+				<div class="space-y-4">
+					<div class="card variant-filled-success drop-shadow-md h-full pb-20">
+						<div class="w-full flex justify-end p-6">
+							<button
+								class="[&>*]:pointer-events-none"
+								use:popup={popupHover}
+								on:click={toggleOptions}
+							>
+								<iconify-icon icon="ion:options-outline" class="text-4xl"></iconify-icon>
+							</button>
 						</div>
-					</form>
-					<a href={`/projects/history/?pid=${id}`} class="btn btn-md variant-filled-secondary w-72"
-						>📖 Project History</a
-					>
-					<button class="btn btn-md variant-filled-primary w-72" on:click={deleteProject}
-						>⚠️ Delete project</button
-					>
-				</section>
+						{#if showOptions}
+							<div class="flex flex-col items-center">
+								<p class="h4">Project Options</p>
+								<div class="w-80 flex flex-col justify-center mt-4 space-y-6">
+									<form action="?/updateWage" method="post">
+										<p class="text-center pb-2">Hourly rate</p>
+										<div class="input-group input-group-divider grid-cols-[auto_1fr_auto]">
+											<input
+												type="number"
+												placeholder="enter hourly rate"
+												bind:value={hourly_rate}
+												name="wage"
+												class="dark:text-white"
+											/>
+
+											<input type="hidden" value={id} name="id" />
+											<button class="variant-filled">Submit</button>
+										</div>
+									</form>
+									<form action="?/updateName" method="post">
+										<p class="text-center pb-2">Contact Name</p>
+										<div class="input-group input-group-divider grid-cols-[auto_1fr_auto]">
+											<input
+												type="text"
+												placeholder="name"
+												name="name"
+												class="dark:text-white"
+												value={contact_name}
+											/>
+
+											<input type="hidden" value={id} name="id" />
+											<button class="variant-filled">Submit</button>
+										</div>
+									</form>
+									<form action="?/updateEmail" method="post">
+										<p class="text-center pb-2">Contact Email</p>
+										<div class="input-group input-group-divider grid-cols-[auto_1fr_auto]">
+											<input
+												type="email"
+												placeholder="email"
+												name="email"
+												class="dark:text-white"
+												value={contact_email}
+											/>
+
+											<input type="hidden" value={id} name="id" />
+											<button class="variant-filled">Submit</button>
+										</div>
+									</form>
+									<section class="flex flex-col justify-center items-center w-full space-y-6">
+										<a
+											href={`/projects/history/?pid=${id}`}
+											class="btn btn-md variant-filled-secondary w-full">📖 Project History</a
+										>
+										<button
+											class="btn btn-md variant-filled-primary w-full"
+											on:click={deleteProject}>⚠️ Delete project</button
+										>
+									</section>
+								</div>
+							</div>
+						{:else}
+							<div class="flex flex-col mt-100 h-full">
+								<div class="card-header">
+									<h2 class="h3 text-center">Amount billable this month</h2>
+								</div>
+								<section class="p-4">
+									<div class="text-center text-6xl font-extrabold">${billableThisMonth}</div>
+								</section>
+							</div>
+						{/if}
+					</div>
+				</div>
 			</div>
 		</div>
 	</div>

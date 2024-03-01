@@ -1,5 +1,5 @@
 import type { PageServerLoad } from './$types';
-import { fail } from '@sveltejs/kit';
+import { error } from '@sveltejs/kit';
 
 export const load: PageServerLoad = async ({ locals, params }) => {
 	// Use UTC dates for the start and end of the month
@@ -13,7 +13,7 @@ export const load: PageServerLoad = async ({ locals, params }) => {
 	const firstDayISO = firstDayOfMonth.toISOString();
 	const lastDayISO = lastDayOfMonth.toISOString();
 
-	const { data: projectWithHours, error } = await locals.supabase
+	const { data: projectWithHours, error: projectError } = await locals.supabase
 		.from('projects')
 		.select(`*, hours (*)`)
 		.eq('id', params.proj_id)
@@ -21,8 +21,9 @@ export const load: PageServerLoad = async ({ locals, params }) => {
 		.lte('hours.date_worked', lastDayISO)
 		.single();
 
-	if (error) {
-		return fail(500, { message: 'Failed to load project.' });
+	if (projectError) {
+		console.log(projectError.message);
+		error(500, { message: projectError.hint });
 	}
 
 	return { projectWithHours };
@@ -37,17 +38,51 @@ export const actions = {
 
 		const wageNumber = parseFloat(wage);
 
-		console.log(wageNumber, typeof wageNumber);
-
-		const { error: error } = await locals.supabase
+		const { error: updateError } = await locals.supabase
 			.from('projects')
 			.update({ hourly_rate: wageNumber })
 			.eq('id', projId)
 			.select();
 
-		if (error) {
-			console.log(error);
-			throw fail(500, { message: 'Failed to update wage' });
+		if (updateError) {
+			console.log(updateError.message);
+			error(500, { message: updateError.hint });
+		}
+
+		return { success: true };
+	},
+	updateName: async ({ locals, request }) => {
+		const data = await request.formData();
+		const projId = data.get('id');
+		const name = data.get('name') as string;
+
+		const { error: updateError } = await locals.supabase
+			.from('projects')
+			.update({ contact_name: name })
+			.eq('id', projId)
+			.select();
+
+		if (updateError) {
+			console.log(updateError.message);
+			error(500, { message: updateError.hint });
+		}
+
+		return { success: true };
+	},
+	updateEmail: async ({ locals, request }) => {
+		const data = await request.formData();
+		const projId = data.get('id');
+		const email = data.get('email') as string;
+
+		const { error: updateError } = await locals.supabase
+			.from('projects')
+			.update({ contact_email: email })
+			.eq('id', projId)
+			.select();
+
+		if (updateError) {
+			console.log(updateError.message);
+			error(500, { message: updateError.hint });
 		}
 
 		return { success: true };

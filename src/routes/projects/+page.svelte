@@ -148,7 +148,7 @@
 						</div>
 					{/if}
 				{:else if tabSet === 2}
-					<div class="card w-full">
+					<div class="card w-full drop-shadow-md">
 						<div class="p-4 md:p-16 md:w-3/5 mx-auto">
 							<BarChart {aggregateData} />
 						</div>

@@ -202,7 +202,7 @@
 					{proj_name}
 				</h2>
 			</section>
-			<div class="grid grid-cols-1 md:grid-cols-2 grid-rows-1 gap-4 min-h-[650px]">
+			<div class="grid grid-cols-1 md:grid-cols-2 grid-rows-1 gap-4">
 				<div class="table-container table-interactive drop-shadow-md">
 					<table class="table table-hover h-full">
 						<thead>

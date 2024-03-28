@@ -26,6 +26,16 @@
 		const input = event.target as HTMLInputElement;
 		input.setCustomValidity('A full date is required.');
 	}
+
+	const increaseSliderVal = () => {
+		sliderValue = sliderValue + 0.5;
+	};
+
+	const decreaseSliderVal = () => {
+		if (sliderValue > 0.5) {
+			sliderValue = sliderValue - 0.5;
+		}
+	};
 </script>
 
 <div class="w-full justify-center">
@@ -73,7 +83,21 @@
 					on:change={handleDateChange}
 					on:invalid={handleInvalidDate}
 				/>
-				<p class="h1 text-8xl mt-8">{sliderValue}</p>
+				<div class="flex justify-center h-fit items-center space-x-10">
+					<button
+						on:click={() => {
+							decreaseSliderVal();
+						}}
+						class="bg-slate-200 border border-gray-500 rounded-full w-20 h-20">-</button
+					>
+					<p class="text-5xl md:text-8xl w-20 md:w-44">{sliderValue}</p>
+					<button
+						on:click={() => {
+							increaseSliderVal();
+						}}
+						class="bg-slate-200 border border-gray-500 rounded-full w-20 h-20">+</button
+					>
+				</div>
 				<input type="number" name="proj_id" value={project.id} hidden />
 				<input type="text" name="proj_name" bind:value={project.proj_name} hidden />
 				<button

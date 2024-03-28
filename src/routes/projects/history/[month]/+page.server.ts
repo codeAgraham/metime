@@ -45,10 +45,22 @@ export const load: PageServerLoad = async ({ locals, params, url }) => {
 		throw error(500, 'Failed to fetch project name.');
 	}
 
+	const { data: invoices, error: invoicesError } = await locals.supabase
+		.from('invoices')
+		.select('*')
+		.eq('project_id', projectId)
+		.gte('start_date', format(startOfTheMonth, 'yyyy-MM-dd'))
+		.lte('start_date', format(endOfTheMonth, 'yyyy-MM-dd'));
+
+	if (invoicesError) {
+		throw error(500, 'Failed to fetch invoices');
+	}
+
 	// Return the entries
 	return {
 		entries,
 		project,
-		monthParam
+		monthParam,
+		invoices
 	};
 };

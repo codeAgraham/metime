@@ -88,14 +88,16 @@
 						on:click={() => {
 							decreaseSliderVal();
 						}}
-						class="bg-slate-200 border border-gray-500 rounded-full w-20 h-20">-</button
+						class="bg-slate-200 border border-gray-500 rounded-full w-20 h-20 text-4xl dark:text-black"
+						>-</button
 					>
 					<p class="text-5xl md:text-8xl w-20 md:w-44">{sliderValue}</p>
 					<button
 						on:click={() => {
 							increaseSliderVal();
 						}}
-						class="bg-slate-200 border border-gray-500 rounded-full w-20 h-20">+</button
+						class="bg-slate-200 border border-gray-500 rounded-full w-20 h-20 text-4xl dark:text-black"
+						>+</button
 					>
 				</div>
 				<input type="number" name="proj_id" value={project.id} hidden />

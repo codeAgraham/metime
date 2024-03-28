@@ -85,6 +85,7 @@
 				/>
 				<div class="flex justify-center h-fit items-center space-x-10">
 					<button
+						type="button"
 						on:click={() => {
 							decreaseSliderVal();
 						}}
@@ -93,6 +94,7 @@
 					>
 					<p class="text-5xl md:text-8xl w-20 md:w-44">{sliderValue}</p>
 					<button
+						type="button"
 						on:click={() => {
 							increaseSliderVal();
 						}}

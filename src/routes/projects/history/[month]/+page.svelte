@@ -3,7 +3,8 @@
 	import { format, parse, parseISO } from 'date-fns';
 	import BreadCrumb from '$lib/components/BreadCrumb.svelte';
 	import { page } from '$app/stores';
-	import { getToastStore, ToastSettings } from '@skeletonlabs/skeleton';
+	import { getToastStore } from '@skeletonlabs/skeleton';
+	import { fail } from '@sveltejs/kit';
 
 	const toastStore = getToastStore();
 
@@ -68,7 +69,7 @@
 				console.error('Failed to create invoice:', errorData.message);
 			} else {
 				const responseData = await response.json();
-				invoices = responseData;
+				invoices = [...invoices, responseData];
 				console.log('Invoice created successfully:', responseData);
 			}
 		} catch (error) {
@@ -101,32 +102,27 @@
 		}
 	};
 
-	const generatePdf = async () => {
+	async function downloadInvoice(invoice: { pdf_link: string }) {
 		try {
-			const response = await fetch('/generatepdf', {
-				method: 'POST',
+			const response = await fetch('/signurl', {
+				method: 'GET',
 				headers: {
 					'Content-Type': 'application/json'
 				},
 				body: JSON.stringify({
-					invoiceId: invoices[0].id
+					filePath: invoice.pdf_link
 				})
 			});
-
 			if (!response.ok) {
-				const errorData = await response.json();
-				console.error('Failed to create pdf:', errorData.message);
-			} else {
-				const blob = await response.blob();
-				const url = window.URL.createObjectURL(blob);
-				// Instead of downloading, open in a new tab
-				window.open(url, '_blank');
-				window.URL.revokeObjectURL(url); // Optional: Clean up object URL
+				throw fail(500, { message: 'Signed URL failed' });
 			}
-		} catch (error) {
-			console.error('Error creating pdf:', error);
+			const { signedUrl } = await response.json();
+			window.location.href = signedUrl;
+		} catch (err: unknown) {
+			console.error('Error downloading invoice:', err);
+			throw fail(500, { message: 'Server Side Error' });
 		}
-	};
+	}
 </script>
 
 <div class="flex flex-col items-center w-full">
@@ -172,9 +168,11 @@
 			<div class="flex">
 				<p class="text-secondary-500">{invoices[0].invoice_number}</p>
 				<button
-					class="text-success-800 text-sm ml-4 hover:underline"
-					on:click={() => generatePdf(invoices[0].id)}>Download</button
-				>
+					on:click={() => {
+						downloadInvoice(invoices[0]);
+					}}
+				></button>
+
 				<button
 					on:click={() => deleteInvoice()}
 					class="text-primary-500 text-sm ml-4 hover:underline">Delete</button

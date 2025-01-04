@@ -33,12 +33,6 @@
 	const handleCloseMenu = () => {
 		drawerStore.close();
 	};
-
-	onMount(() => {
-		if (data.session?.user) {
-			goto('/projects');
-		}
-	});
 </script>
 
 <svelte:head><title>metime$</title></svelte:head>

@@ -1,6 +1,5 @@
 <script lang="ts">
 	import '../app.postcss';
-	import { goto } from '$app/navigation';
 	import {
 		AppShell,
 		AppBar,
@@ -17,14 +16,11 @@
 	// Floating UI for Popups
 	import { computePosition, autoUpdate, flip, shift, offset, arrow } from '@floating-ui/dom';
 	import { storePopup } from '@skeletonlabs/skeleton';
-	import { onMount } from 'svelte';
 	storePopup.set({ computePosition, autoUpdate, flip, shift, offset, arrow });
 
 	initializeStores();
 
 	const drawerStore = getDrawerStore();
-
-	export let data;
 
 	const handleOpenMenu = () => {
 		drawerStore.open();

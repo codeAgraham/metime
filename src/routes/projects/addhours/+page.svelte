@@ -14,6 +14,9 @@
 
 	const project = data.project[0];
 
+	// Get current date in YYYY-MM-DD format
+	const today = new Date().toISOString().split('T')[0];
+
 	// Reactive statement to update the submit button state
 	$: isSubmitEnabled = sliderValue >= 0.5;
 
@@ -27,11 +30,13 @@
 		input.setCustomValidity('A full date is required.');
 	}
 
-	const increaseSliderVal = () => {
+	const increaseSliderVal = (event: Event) => {
+		event.preventDefault();
 		sliderValue = sliderValue + 0.5;
 	};
 
-	const decreaseSliderVal = () => {
+	const decreaseSliderVal = (event: Event) => {
+		event.preventDefault();
 		if (sliderValue > 0.5) {
 			sliderValue = sliderValue - 0.5;
 		}
@@ -78,6 +83,7 @@
 					type="date"
 					name="date"
 					id="date"
+					value={today}
 					class="w-3/6 p-2 border border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
 					required
 					on:change={handleDateChange}
@@ -86,18 +92,14 @@
 				<div class="flex justify-center h-fit items-center space-x-10">
 					<button
 						type="button"
-						on:click={() => {
-							decreaseSliderVal();
-						}}
+						on:click={decreaseSliderVal}
 						class="bg-slate-200 border border-gray-500 rounded-full w-20 h-20 text-4xl dark:text-black"
 						>-</button
 					>
 					<p class="text-5xl md:text-8xl w-20 md:w-44">{sliderValue}</p>
 					<button
 						type="button"
-						on:click={() => {
-							increaseSliderVal();
-						}}
+						on:click={increaseSliderVal}
 						class="bg-slate-200 border border-gray-500 rounded-full w-20 h-20 text-4xl dark:text-black"
 						>+</button
 					>

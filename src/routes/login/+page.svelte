@@ -8,6 +8,7 @@
 	const toastStore = getToastStore();
 
 	let loading: boolean = false;
+	let showPassword: boolean = false;
 
 	$: if ($page.url.searchParams.get('redirected') === 'true') {
 		const t: ToastSettings = {
@@ -54,12 +55,21 @@
 			</label>
 			<label class="label">
 				<span>password</span>
-				<input
-					class="input text-black dark:text-white"
-					type="password"
-					name="password"
-					autocomplete="current-password"
-				/>
+				<div class="input-group input-group-divider grid-cols-[1fr_auto]">
+					<input
+						class="input text-black dark:text-white"
+						type={showPassword ? 'text' : 'password'}
+						name="password"
+						autocomplete="current-password"
+					/>
+					<button
+						type="button"
+						class="input-group-shim text-sm"
+						on:click={() => (showPassword = !showPassword)}
+					>
+						{showPassword ? 'hide' : 'show'}
+					</button>
+				</div>
 			</label>
 			<button class="btn variant-filled-primary w-full !mt-8" disabled={loading}>
 				{#if loading}

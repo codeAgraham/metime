@@ -64,7 +64,7 @@
 					/>
 					<button
 						type="button"
-						class="input-group-shim text-sm"
+						class="input-group-shim text-sm w-14"
 						on:click={() => (showPassword = !showPassword)}
 					>
 						{showPassword ? 'hide' : 'show'}

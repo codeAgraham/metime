@@ -197,71 +197,73 @@
 
 	<div class="container mx-auto">
 		<div class="mx-4 pb-10">
-			<section class="w-full flex items-center justify-between">
+			<section class="w-full flex items-center justify-between mb-4">
 				<h2 class="h2 capitalize pt-4 px-8 tracking-tighter antialiased font-semibold">
 					{proj_name}
 				</h2>
+				<a
+					href={`/projects/addhours?projectId=${id}`}
+					class="btn btn-md variant-filled-tertiary mr-8">+ Add hours</a
+				>
 			</section>
 			<div class="grid grid-cols-1 md:grid-cols-2 grid-rows-1 gap-4">
-				<div class="table-container table-interactive drop-shadow-md">
-					<table class="table table-hover h-full">
-						<thead>
-							<tr>
-								<th colspan="3" class="h3 text-center">
-									<span
-										>hours for {currentMonthName}
-										{new Date().getFullYear()}</span
-									>
-								</th>
-							</tr>
-							<tr class="h5">
-								<th><span class="pl-5">Date</span></th>
-								<th colspan="2"><span class="pl-3">Hours</span></th>
-							</tr>
-						</thead>
-						<tbody>
-							{#if hours.length === 0}
+				<div class="order-2 md:order-1">
+					<div
+						class="table-container table-interactive drop-shadow-md max-h-[300px] md:max-h-[500px] overflow-y-auto"
+					>
+						<table class="table table-hover h-full">
+							<thead>
 								<tr>
-									<td colspan="2" class="text-center"
-										>You have no hours entered for {currentMonthName}</td
+									<th colspan="3" class="h3 text-center">
+										<span
+											>hours for {currentMonthName}
+											{new Date().getFullYear()}</span
+										>
+									</th>
+								</tr>
+								<tr class="h5">
+									<th><span class="pl-5">Date</span></th>
+									<th colspan="2"><span class="pl-3">Hours</span></th>
+								</tr>
+							</thead>
+							<tbody>
+								{#if hours.length === 0}
+									<tr>
+										<td colspan="2" class="text-center"
+											>You have no hours entered for {currentMonthName}</td
+										>
+									</tr>
+								{:else}
+									{#each hours as entry (entry.id)}
+										<tr class="group" on:click={() => toggleDeleteButton(entry.id)}>
+											<td><span class="pl-10">{formatDate(entry.date_worked)}</span></td>
+											<td><span class="pl-10">{entry.hours_entered}</span></td>
+											<td colspan="2">
+												<button
+													class="btn btn-sm variant-filled-error invisible opacity-0 group-hover:opacity-100 group-hover:visible transition-opacity duration-300 ease-in-out {activeDeleteButton ===
+													entry.id
+														? 'opacity-100 visible'
+														: ''}"
+													on:click={() => deleteHour(entry.id)}
+												>
+													-
+												</button>
+											</td>
+										</tr>
+									{/each}
+								{/if}
+							</tbody>
+							<tfoot>
+								<tr class="variant-soft-tertiary">
+									<td class="h4 font-bold" colspan="3"
+										>Hours this month: <span class="text-primary-500">{totalHours}</span></td
 									>
 								</tr>
-							{:else}
-								{#each hours as entry (entry.id)}
-									<tr class="group" on:click={() => toggleDeleteButton(entry.id)}>
-										<td><span class="pl-10">{formatDate(entry.date_worked)}</span></td>
-										<td><span class="pl-10">{entry.hours_entered}</span></td>
-										<td colspan="2">
-											<button
-												class="btn btn-sm variant-filled-error invisible opacity-0 group-hover:opacity-100 group-hover:visible transition-opacity duration-300 ease-in-out {activeDeleteButton ===
-												entry.id
-													? 'opacity-100 visible'
-													: ''}"
-												on:click={() => deleteHour(entry.id)}
-											>
-												-
-											</button>
-										</td>
-									</tr>
-								{/each}
-							{/if}
-						</tbody>
-						<tfoot>
-							<tr class="variant-soft-tertiary">
-								<td
-									><a
-										href={`/projects/addhours?projectId=${id}`}
-										class="btn btn-md variant-filled-tertiary">+ Add hours</a
-									></td
-								>
-								<td class="h4 font-bold" colspan="3"
-									>Hours this month: <span class="text-primary-500">{totalHours}</span></td
-								>
-							</tr>
-						</tfoot>
-					</table>
+							</tfoot>
+						</table>
+					</div>
 				</div>
-				<div class="space-y-4">
+				<div class="space-y-4 order-1 md:order-2">
 					<div class="card variant-filled-success drop-shadow-md h-full pb-20">
 						<div class="w-full flex justify-end p-6">
 							<button
@@ -339,6 +341,7 @@
 									<h2 class="h3 text-center">Amount billable this month</h2>
 								</div>
 								<section class="p-4">
+									<div class="text-center text-4xl font-bold mb-4">Total Hours: {totalHours}</div>
 									<div class="text-center text-6xl font-extrabold">${billableThisMonth}</div>
 								</section>
 							</div>

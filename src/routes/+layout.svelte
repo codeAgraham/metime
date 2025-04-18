@@ -8,19 +8,23 @@
 		Toast,
 		Modal,
 		Drawer,
-		getDrawerStore
+		getDrawerStore,
+		getModalStore
 	} from '@skeletonlabs/skeleton';
 	import DropNav from '$lib/components/DropNav.svelte';
 	import 'iconify-icon';
+	import { onMount } from 'svelte';
 
 	// Floating UI for Popups
 	import { computePosition, autoUpdate, flip, shift, offset, arrow } from '@floating-ui/dom';
 	import { storePopup } from '@skeletonlabs/skeleton';
-	storePopup.set({ computePosition, autoUpdate, flip, shift, offset, arrow });
 
 	initializeStores();
 
+	storePopup.set({ computePosition, autoUpdate, flip, shift, offset, arrow });
+
 	const drawerStore = getDrawerStore();
+	const modalStore = getModalStore();
 
 	const handleOpenMenu = () => {
 		drawerStore.open();
